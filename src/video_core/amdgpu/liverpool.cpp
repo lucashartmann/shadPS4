@@ -11,6 +11,7 @@
 #include "video_core/amdgpu/pm4_cmds.h"
 #include "video_core/renderdoc.h"
 #include "video_core/renderer_vulkan/vk_rasterizer.h"
+#include <iostream>
 
 namespace AmdGpu {
 
@@ -534,7 +535,22 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
             case PM4ItOpcode::WaitOnCeCounter: {
                 while (cblock.ce_count <= cblock.de_count) {
                     TracyFiberLeave;
-                    ce_task.handle.resume();
+                    if (ce_task.handle && !ce_task.handle.done()) {
+                        try {
+                            ce_task.handle.resume();
+                        } catch (const std::exception& e) {
+                            std::cerr << "Erro ao retomar a coroutine: " << e.what() << std::endl;
+                            break; 
+                        } catch (...) {
+                            std::cerr << "Erro desconhecido ao retomar a coroutine." << std::endl;
+                            break; 
+                        }
+                    } else {
+                        std::cerr << "Erro: ce_task.handle é nulo ou já foi completado durante a "
+                                     "chamada de resume."
+                                  << std::endl;
+                        break; 
+                    }
                     TracyFiberEnter(dcb_task_name);
                 }
                 break;

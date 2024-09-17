@@ -187,7 +187,7 @@ int PS4_SYSV_ABI sceNetCtlGetNetEvConfigInfoIpcInt() {
 }
 
 int PS4_SYSV_ABI sceNetCtlGetResult(int eventType, int* errorCode) {
-    LOG_ERROR(Lib_NetCtl, "(STUBBED) called eventType = {} ", eventType);
+    //LOG_ERROR(Lib_NetCtl, "(STUBBED) called eventType = {} ", eventType);
     *errorCode = 0;
     return ORBIS_OK;
 }

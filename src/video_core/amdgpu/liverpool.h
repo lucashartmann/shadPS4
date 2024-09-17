@@ -21,6 +21,7 @@
 #include "shader_recompiler/params.h"
 #include "video_core/amdgpu/pixel_format.h"
 #include "video_core/amdgpu/resource.h"
+#include <iostream>
 
 namespace Vulkan {
 class Rasterizer;
@@ -1126,9 +1127,12 @@ private:
                 try {
                     std::rethrow_exception(std::current_exception());
                 } catch (const std::exception& e) {
-                    UNREACHABLE_MSG("Unhandled exception: {}", e.what());
+                    std::cerr << "Unhandled exception: " << e.what() << std::endl;
+                } catch (...) {
+                    std::cerr << "Unhandled unknown exception" << std::endl;
                 }
             }
+
             void return_void() {}
             struct empty {};
             std::suspend_always yield_value(empty&&) {
