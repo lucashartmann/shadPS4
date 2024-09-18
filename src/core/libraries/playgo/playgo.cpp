@@ -192,7 +192,7 @@ s32 PS4_SYSV_ABI scePlayGoGetProgress(OrbisPlayGoHandle handle, const OrbisPlayG
 
 s32 PS4_SYSV_ABI scePlayGoGetToDoList(OrbisPlayGoHandle handle, OrbisPlayGoToDo* outTodoList,
                                       u32 numberOfEntries, u32* outEntries) {
-    LOG_INFO(Lib_PlayGo, "called handle = {} numberOfEntries = {}", handle, numberOfEntries);
+    //LOG_INFO(Lib_PlayGo, "called handle = {} numberOfEntries = {}", handle, numberOfEntries);
 
     auto* playgo = Common::Singleton<PlaygoFile>::Instance();
 
