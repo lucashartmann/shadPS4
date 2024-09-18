@@ -350,8 +350,8 @@ set(COMMON src/common/logging/backend.cpp
            src/common/config.cpp
            src/common/config.h
            src/common/debug.h
-           src/common/disassembler.cpp
-           src/common/disassembler.h
+           src/common/decoder.cpp
+           src/common/decoder.h
            src/common/endian.h
            src/common/enum.h
            src/common/io_file.cpp
@@ -369,6 +369,8 @@ set(COMMON src/common/logging/backend.cpp
            src/common/polyfill_thread.h
            src/common/rdtsc.cpp
            src/common/rdtsc.h
+           src/common/signal_context.h
+           src/common/signal_context.cpp
            src/common/singleton.h
            src/common/slot_vector.h
            src/common/string_util.cpp
