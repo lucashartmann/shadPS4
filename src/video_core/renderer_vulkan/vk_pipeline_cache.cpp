@@ -186,10 +186,25 @@ const ComputePipeline* PipelineCache::GetComputePipeline() {
 }
 
 bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 6> skip_hashes = {0xec92d84e47b4c747, 0xec92d84eff72861a, 0x9122e2f9eb3ffed9, 0x81ac71121916cef0, 0x72e540be7eaacd3,  0xa1e9015cb60883dc};
+    static constexpr std::array<u64, 0> skip_hashes = {};
+
+    // FIFA 14 Skips: 0xec602a8fee029fd0, 0x65854b2b21f19601, 0x793f1066476b16c9
     
-    //UFC 1 Skips : 0xec92d84e47b4c747, 0xec92d84eff72861a, 0x9122e2f9eb3ffed9, 0x81ac71121916cef0, 0x72e540be7eaacd3, 0xa1e9015cb60883dc
-    //FIFA 14 Skips: 0xec602a8fee029fd0, 0x65854b2b21f19601, 0x793f1066476b16c9
+    // UFC 1 Skips to get to the menu: 0x81ac71121916cef0, 0x72e540be7eaacd3, 0xa1e9015cb60883dc
+    /* UFC 1 Skips to get to the gameplay: 0x3abf50ba16091f46, 0x3163fb9f52f4ede7,
+        0x3abf50baddd4decb, 0x3abf50baf7f1ece7, 0x3163fb9f31b0a23e, 0xa037e80424ab5c6a,
+        0x3163fb9f22a7308f, 0xfd5f44ab5be41430, 0xc8c2e96278f8ac90, 0xeda81c06943b0688,
+        0x761938cf605eaee7, 0x5a86bb695ed32814, 0x714c57b840eb27db, 0xfd5f44ab06133ddd,
+        0x1c224b467f37fe5a, 0xeda81c068e2f2c38, 0xdc4c674e3ac0cbac, 0xf5745bb828a867e8,
+        0xd0a7339a6e967afb, 0x5a86bb69a96404e5, 0x84e5a4db9411f6d9, 0x965ad37d47fd370d,
+        0x1e8f6e6a488add30, 0xed260a310c79683c, 0xeda81c062603bf0b, 0x1e8f6e6aae9d46c2,
+        0x1c224b46d5a85909, 0xdc4c674e20e58f76, 0x965ad37d72d727b3, 0xf5745bb80cd446e3,
+        0x5a86bb69e9da619a, 0xc8c2e9625aca97f3, 0x714c57b8a300804d, 0xcb936483d673971f,
+        0xed260a31f8f6c682, 0xf337842af939ea3a, 0x17c8dd0bcb5fd88e, 0xd76d80a5897d8664,
+        0x84e5a4dbc7c0c591, 0xd0a7339ac88a0808, 0x9554eb53af248d49, 0xca743277c769f815,
+        0xdc4c674e153218fe, 0x307d19ec8da36694, 0xf5745bb80cee46e5, 0x932fdcdd1fd1d60c,
+        0x965ad37df78c6090, 0x330fc1531bb3473b, 0xed260a31f78c6090, */
+    
 
     if (std::ranges::contains(skip_hashes, shader_hash)) {
         //LOG_WARNING(Render_Vulkan, "Skipped {} shader hash {:#x}.", shader_type, shader_hash);

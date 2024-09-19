@@ -1042,7 +1042,7 @@ int PS4_SYSV_ABI sceNetSocketAbort() {
 }
 
 int PS4_SYSV_ABI sceNetSocketClose() {
-    LOG_ERROR(Lib_Net, "(STUBBED) called");
+    //LOG_ERROR(Lib_Net, "(STUBBED) called");
     return ORBIS_OK;
 }
 
