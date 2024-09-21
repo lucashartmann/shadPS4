@@ -4,6 +4,7 @@
 #pragma once
 
 #include <bitset>
+#include <iostream>
 
 #include "common/types.h"
 #include "shader_recompiler/info.h"
@@ -68,17 +69,35 @@ struct StageSpecialization {
     }
 
     void ForEachSharp(u32& binding, auto& spec_list, auto& desc_list, auto&& func) {
+        if (desc_list.empty()) {
+            //std::cerr << "Erro: desc_list está vazio!" << std::endl;
+            return;
+        }
+
+        if (!info) {
+            //std::cerr << "Erro: Ponteiro info é nulo!" << std::endl;
+            return;
+        }
+
+        u32 index = 0;
         for (const auto& desc : desc_list) {
             auto& spec = spec_list.emplace_back();
-            const auto sharp = desc.GetSharp(*info);
+            const auto sharp = desc.GetSharp(
+                *info); 
             if (!sharp) {
+                //std::cerr << "Erro: sharp não encontrado para desc na posição " << index
+                //          << std::endl;
                 binding++;
+                index++;
                 continue;
             }
+
             bitset.set(binding++);
             func(spec, desc, sharp);
+            index++;
         }
     }
+
 
     bool operator==(const StageSpecialization& other) const {
         if (start_binding != other.start_binding) {
