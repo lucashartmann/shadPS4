@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <functional>
 #include "common/types.h"
+#include "shader_recompiler/backend/bindings.h"
 #include "shader_recompiler/info.h"
 
 namespace Shader {
@@ -46,22 +47,11 @@ struct StageSpecialization {
     boost::container::small_vector<BufferSpecialization, 16> buffers;
     boost::container::small_vector<TextureBufferSpecialization, 8> tex_buffers;
     boost::container::small_vector<ImageSpecialization, 16> images;
-    u32 start_binding{};
+    Backend::Bindings start{};
 
     explicit StageSpecialization(const Shader::Info& info_, RuntimeInfo runtime_info_,
-                                 u32 start_binding_)
-        : info{&info_}, runtime_info{runtime_info_}, start_binding{start_binding_} {
-        
-        //assert(info != nullptr && "info should not be null");
-        //assert(info->buffers.size() > 0 && "info->buffers should not be empty");
-        //assert(info->texture_buffers.size() > 0 && "info->texture_buffers should not be empty");
-        //assert(info->images.size() > 0 && "info->images should not be empty");
-
-        //std::cerr << "Size of info->buffers: " << info->buffers.size() << std::endl;
-        //std::cerr << "Size of info->texture_buffers: " << info->texture_buffers.size() << std::endl;
-        //std::cerr << "Size of info->images: " << info->images.size() << std::endl;
-
-
+                                 Backend::Bindings start_)
+        : info{&info_}, runtime_info{runtime_info_}, start{start_} {
         u32 binding{};
         ForEachSharp(binding, buffers, info->buffers,
                      [](auto& spec, const auto& desc, AmdGpu::Buffer sharp) {
@@ -95,7 +85,7 @@ struct StageSpecialization {
             return;
         }
 
-        for (auto& desc : desc_list) {
+        for (const auto& desc : desc_list) {
             auto& spec = spec_list.emplace_back();
             const auto sharp = desc.GetSharp(*info);
             if (!sharp) {
@@ -108,7 +98,7 @@ struct StageSpecialization {
     }
 
     bool operator==(const StageSpecialization& other) const {
-        if (start_binding != other.start_binding) {
+        if (start != other.start) {
             return false;
         }
         if (runtime_info != other.runtime_info) {
