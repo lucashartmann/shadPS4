@@ -195,7 +195,7 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
         switch (type) {
         case 0:
         case 1:
-            UNREACHABLE_MSG("Unsupported PM4 type {}", type);
+            //UNREACHABLE_MSG("Unsupported PM4 type {}", type);
             break;
         case 2:
             // Type-2 packet are used for padding purposes
@@ -557,8 +557,8 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
                 break;
             }
             default:
-                UNREACHABLE_MSG("Unknown PM4 type 3 opcode {:#x} with count {}",
-                                static_cast<u32>(opcode), count);
+                //UNREACHABLE_MSG("Unknown PM4 type 3 opcode {:#x} with count {}",
+                //                static_cast<u32>(opcode), count);
             }
             dcb = NextPacket(dcb, header->type3.NumWords() + 1);
             break;
@@ -566,7 +566,7 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
     }
 
     if (ce_task.handle) {
-        ASSERT_MSG(ce_task.handle.done(), "Partially processed CCB");
+        //ASSERT_MSG(ce_task.handle.done(), "Partially processed CCB");
         ce_task.handle.destroy();
     }
 

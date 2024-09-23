@@ -33,8 +33,14 @@ public:
     [[nodiscard]] Entry* find(size_t page) {
         const size_t l1_page = page >> SecondLevelBits;
         const size_t l2_page = page & (NumEntriesPerL1Page - 1);
+        if (l1_page >= first_level_map.size()) {
+            first_level_map.resize(l1_page + 1); 
+        }
         if (!first_level_map[l1_page]) {
-            return nullptr;
+            first_level_map[l1_page] = page_alloc.Create();
+            if (!first_level_map[l1_page]) {
+                throw std::runtime_error("Failed to allocate page");
+            }
         }
         return &(*first_level_map[l1_page])[l2_page];
     }
@@ -42,20 +48,33 @@ public:
     [[nodiscard]] const Entry& operator[](size_t page) const {
         const size_t l1_page = page >> SecondLevelBits;
         const size_t l2_page = page & (NumEntriesPerL1Page - 1);
+        if (l1_page >= first_level_map.size()) {
+            first_level_map.resize(l1_page + 1); 
+        }
         if (!first_level_map[l1_page]) {
             first_level_map[l1_page] = page_alloc.Create();
+            if (!first_level_map[l1_page]) {
+                throw std::runtime_error("Failed to allocate page");
+            }
         }
         return (*first_level_map[l1_page])[l2_page];
     }
 
-    [[nodiscard]] Entry& operator[](size_t page) {
+   [[nodiscard]] Entry& operator[](size_t page) {
         const size_t l1_page = page >> SecondLevelBits;
         const size_t l2_page = page & (NumEntriesPerL1Page - 1);
+        if (l1_page >= first_level_map.size()) {
+            first_level_map.resize(l1_page + 1); 
+        }
         if (!first_level_map[l1_page]) {
             first_level_map[l1_page] = page_alloc.Create();
+            if (!first_level_map[l1_page]) {
+                throw std::runtime_error("Failed to allocate page");
+            }
         }
         return (*first_level_map[l1_page])[l2_page];
     }
+
 
 private:
     std::vector<L1Page*> first_level_map{};

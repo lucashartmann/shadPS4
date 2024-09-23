@@ -83,7 +83,7 @@ int PS4_SYSV_ABI sceAudio3dPortGetAttributesSupported(OrbisAudio3dPortId uiPortI
 
 int PS4_SYSV_ABI sceAudio3dPortGetQueueLevel(OrbisAudio3dPortId uiPortId, unsigned int* pQueueLevel,
                                              unsigned int* pQueueAvailable) {
-    LOG_INFO(Lib_Audio3d, "uiPortId = {}", uiPortId);
+    //LOG_INFO(Lib_Audio3d, "uiPortId = {}", uiPortId);
     return ORBIS_OK;
 }
 

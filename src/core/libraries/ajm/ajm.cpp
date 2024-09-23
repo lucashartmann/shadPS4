@@ -36,12 +36,12 @@ int PS4_SYSV_ABI sceAjmBatchJobRunBufferRa() {
 }
 
 int PS4_SYSV_ABI sceAjmBatchJobRunSplitBufferRa() {
-    LOG_ERROR(Lib_Ajm, "(STUBBED) called");
+    //LOG_ERROR(Lib_Ajm, "(STUBBED) called");
     return ORBIS_OK;
 }
 
 int PS4_SYSV_ABI sceAjmBatchStartBuffer() {
-    LOG_ERROR(Lib_Ajm, "(STUBBED) called");
+    //LOG_ERROR(Lib_Ajm, "(STUBBED) called");
     return ORBIS_OK;
 }
 

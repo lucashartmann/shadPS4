@@ -4,8 +4,8 @@
 #pragma once
 
 #include <bitset>
-#include <iostream>
-
+#include <stdexcept>
+#include <functional>
 #include "common/types.h"
 #include "shader_recompiler/info.h"
 
@@ -51,6 +51,17 @@ struct StageSpecialization {
     explicit StageSpecialization(const Shader::Info& info_, RuntimeInfo runtime_info_,
                                  u32 start_binding_)
         : info{&info_}, runtime_info{runtime_info_}, start_binding{start_binding_} {
+        
+        //assert(info != nullptr && "info should not be null");
+        //assert(info->buffers.size() > 0 && "info->buffers should not be empty");
+        //assert(info->texture_buffers.size() > 0 && "info->texture_buffers should not be empty");
+        //assert(info->images.size() > 0 && "info->images should not be empty");
+
+        //std::cerr << "Size of info->buffers: " << info->buffers.size() << std::endl;
+        //std::cerr << "Size of info->texture_buffers: " << info->texture_buffers.size() << std::endl;
+        //std::cerr << "Size of info->images: " << info->images.size() << std::endl;
+
+
         u32 binding{};
         ForEachSharp(binding, buffers, info->buffers,
                      [](auto& spec, const auto& desc, AmdGpu::Buffer sharp) {
@@ -69,36 +80,32 @@ struct StageSpecialization {
                      });
     }
 
-    void ForEachSharp(u32& binding, auto& spec_list, auto& desc_list, auto&& func) {
+     void ForEachSharp(u32& binding, auto& spec_list, auto& desc_list, auto&& func) {
+
+        if (this == nullptr) {
+            return;
+        }
+        if (info == nullptr) {
+            return;
+        }
         if (desc_list.empty()) {
-            //std::cerr << "Erro: desc_list está vazio!" << std::endl;
+            return;
+        }
+        if (spec_list.empty()) {
             return;
         }
 
-        if (!info) {
-            //std::cerr << "Erro: Ponteiro info é nulo!" << std::endl;
-            return;
-        }
-
-        u32 index = 0;
-        for (const auto& desc : desc_list) {
+        for (auto& desc : desc_list) {
             auto& spec = spec_list.emplace_back();
-            const auto sharp = desc.GetSharp(
-                *info); 
+            const auto sharp = desc.GetSharp(*info);
             if (!sharp) {
-                //std::cerr << "Erro: sharp não encontrado para desc na posição " << index
-                //          << std::endl;
                 binding++;
-                index++;
                 continue;
             }
-
             bitset.set(binding++);
             func(spec, desc, sharp);
-            index++;
         }
     }
-
 
     bool operator==(const StageSpecialization& other) const {
         if (start_binding != other.start_binding) {
