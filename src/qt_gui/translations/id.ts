@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="id">
 	<!-- SPDX-FileCopyrightText: Copyright 2024 shadPS4 Emulator Project
@@ -473,11 +473,6 @@
 			<location filename="../settings_dialog.ui" line="469"/>
 			<source>Enable NULL GPU</source>
 			<translation>Enable NULL GPU</translation>
-		</message>
-		<message>
-			<location filename="../settings_dialog.ui" line="476"/>
-			<source>Enable PM4 Dumping</source>
-			<translation>Enable PM4 Dumping</translation>
 		</message>
 		<message>
 			<location filename="../settings_dialog.ui" line="517"/>
@@ -1054,11 +1049,6 @@
 			<translation>Aktifkan GPU Null:\nUntuk tujuan debugging teknis, menonaktifkan rendering permainan seolah-olah tidak ada kartu grafis.</translation>
 		</message>
 		<message>
-			<location filename="../settings_dialog.cpp" line="323"/>
-			<source>dumpPM4CheckBox</source>
-			<translation>Aktifkan Pembuangan PM4:\nUntuk tujuan debugging teknis, menyimpan data instruksi GPU mentah ke folder saat emulator memprosesnya.</translation>
-		</message>
-		<message>
 			<location filename="../settings_dialog.cpp" line="329"/>
 			<source>debugDump</source>
 			<translation>Aktifkan Pembuangan Debug:\nMenyimpan simbol impor dan ekspor serta informasi header file dari program PS4 yang sedang berjalan ke direktori.</translation>
@@ -1120,6 +1110,11 @@
 			<location filename="../game_list_frame.cpp" line="35"/>
 			<source>Path</source>
 			<translation>Jalur</translation>
+		</message>
+		<message>
+			<location filename="../game_list_frame.cpp" line="38"/>
+			<source>Play Time</source>
+			<translation>Waktu Bermain</translation>
 		</message>
 	</context>
 	<context>

@@ -72,7 +72,7 @@ Check the build instructions for [**Linux**](https://github.com/shadps4-emu/shad
 Check the build instructions for [**macOS**](https://github.com/shadps4-emu/shadPS4/blob/main/documents/building-macos.md).
 
 > [!IMPORTANT]
-> macOS users need at least macOS 15 on Apple Silicon-based Mac devices and at least macOS 11 on Intel-based Mac devices.
+> macOS users need at least macOS 15 on Apple Silicon-based Mac devices and at least macOS 14 on Intel-based Mac devices.
 
 # Debugging and reporting issues
 
@@ -102,7 +102,7 @@ PAD DOWN | DOWN |
 PAD LEFT | LEFT |
 PAD RIGHT | RIGHT |
 OPTIONS | RETURN |
-TOUCH PAD | SPACE |
+BACK BUTTON / TOUCH PAD | SPACE |
 L1 | Q |
 R1 | U |
 L2 | E |

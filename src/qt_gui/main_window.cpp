@@ -58,6 +58,7 @@ bool MainWindow::Init() {
     this->show();
     // load game list
     LoadGameLists();
+    // Check for update
     CheckUpdateMain(true);
 
     auto end = std::chrono::steady_clock::now();
@@ -69,6 +70,14 @@ bool MainWindow::Init() {
     QString statusMessage =
         "Games: " + QString::number(numGames) + " (" + QString::number(duration.count()) + "ms)";
     statusBar->showMessage(statusMessage);
+
+    // Initialize Discord RPC
+    if (Config::getEnableDiscordRPC()) {
+        auto* rpc = Common::Singleton<DiscordRPCHandler::RPC>::Instance();
+        rpc->init();
+        rpc->setStatusIdling();
+    }
+
     return true;
 }
 
@@ -687,8 +696,8 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
             }
             std::string entitlement_label = Common::SplitString(content_id, '-')[2];
 
-            auto addon_extract_path = Common::FS::GetUserPath(Common::FS::PathType::AddonsDir) /
-                                      pkg.GetTitleID() / entitlement_label;
+            auto addon_extract_path =
+                Config::getAddonInstallDir() / pkg.GetTitleID() / entitlement_label;
             QString addonDirPath;
             Common::FS::PathToQString(addonDirPath, addon_extract_path);
             QDir addon_dir(addonDirPath);
@@ -768,7 +777,7 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
                     }
                 }
             } else {
-                msgBox.setText(QString(tr("Game already installed") + "\n" + addonDirPath + "\n" +
+                msgBox.setText(QString(tr("Game already installed") + "\n" + gameDirPath + "\n" +
                                        tr("Would you like to overwrite?")));
                 msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
                 msgBox.setDefaultButton(QMessageBox::No);
