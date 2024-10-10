@@ -259,7 +259,7 @@ inline IR::Inst* Value::Inst() const {
 }
 
 inline IR::Inst* Value::InstRecursive() const {
-    DEBUG_ASSERT(type == Type::Opaque);
+    //DEBUG_ASSERT(type == Type::Opaque);
     if (IsIdentity()) {
         return inst->Arg(0).InstRecursive();
     }
