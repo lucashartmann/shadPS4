@@ -1097,12 +1097,12 @@ void PS4_SYSV_ABI posix_pthread_yield() {
 int PS4_SYSV_ABI scePthreadAttrGetstack(ScePthreadAttr* attr, void** addr, size_t* size) {
 
     int result = pthread_attr_getstack(&(*attr)->pth_attr, addr, size);
-    LOG_INFO(Kernel_Pthread, "scePthreadAttrGetstack: result = {}", result);
+    //LOG_INFO(Kernel_Pthread, "scePthreadAttrGetstack: result = {}", result);
 
-    if (result == 0) {
+    //if (result == 0) {
         return SCE_OK;
-    }
-    return SCE_KERNEL_ERROR_EINVAL;
+    //}
+    //return SCE_KERNEL_ERROR_EINVAL;
 }
 
 int PS4_SYSV_ABI scePthreadAttrSetstack(ScePthreadAttr* attr, void* addr, size_t size) {

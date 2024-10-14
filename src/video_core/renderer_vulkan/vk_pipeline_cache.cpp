@@ -224,6 +224,22 @@ const ComputePipeline* PipelineCache::GetComputePipeline() {
     return it->second;
 }
 
+bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
+    static constexpr std::array<u64, 33> skip_hashes = {0x72e540be7eaacd3, 0xa1e9015cb60883dc, 0x72e540be7eaacd3, 0x72e540be7eaacd3,  0xa1e9015cb60883dc, 0xec92d84e47b4c747, 0xa1e9015cb60883dc, 0x72e540be7eaacd3,
+        0x81ac71121916cef0, 0x81ac71121916cef0, 0x1198feb94d57a9e4, 0x72e540be7eaacd3,
+        0xa1e9015cb60883dc, 0x81ac71121916cef0, 0x72e540be7eaacd3,  0x72e540be7eaacd3,
+        0x81ac71121916cef0, 0x72e540be7eaacd3,  0x81ac71121916cef0, 0x72e540be7eaacd3,
+        0x81ac71121916cef0, 0x72e540be7eaacd3,  0x72e540be7eaacd3,  0x81ac71121916cef0,
+        0x72e540be7eaacd3,  0x81ac71121916cef0, 0x72e540b6c168777,  0x81ac71121916cef0,
+        0xa1e9015cb60883dc, 0xa1e9015cb60883dc, 0xa1e9015cb60883dc, 0x81ac71121916cef0,
+        0x72e540b6c168777};
+    
+    if (std::ranges::contains(skip_hashes, shader_hash)) {
+        return true;
+    }
+    return false;
+}
+
 bool PipelineCache::RefreshGraphicsKey() {
     std::memset(&graphics_key, 0, sizeof(GraphicsPipelineKey));
 
