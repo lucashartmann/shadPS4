@@ -53,6 +53,19 @@
 		</message>
 	</context>
 	<context>
+		<name>InstallDirSelect</name>
+		<message>
+			<location filename="../install_dir_select.cpp" line="30"/>
+			<source>shadPS4 - Choose directory</source>
+			<translation>shadPS4 - Mappa kiválasztása</translation>
+		</message>
+		<message>
+			<location filename="../install_dir_select.cpp" line="37"/>
+			<source>Select which directory you want to install to.</source>
+			<translation>Select which directory you want to install to.</translation>
+		</message>
+	</context>
+	<context>
 		<name>GameInstallDialog</name>
 		<message>
 			<location filename="../game_install_dialog.cpp" line="24"/>
@@ -128,6 +141,26 @@
 			<translation>Összes Másolása</translation>
 		</message>
 		<message>
+			<location filename="../gui_context_menus.h" line="72"/>
+			<source>Delete...</source>
+			<translation>Delete...</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="73"/>
+			<source>Delete Game</source>
+			<translation>Delete Game</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="74"/>
+			<source>Delete Update</source>
+			<translation>Delete Update</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="75"/>
+			<source>Delete DLC</source>
+			<translation>Delete DLC</translation>
+		</message>
+		<message>
 			<location filename="../gui_context_menus.h" line="173"/>
 			<source>Shortcut creation</source>
 			<translation>Parancsikon létrehozása</translation>
@@ -151,6 +184,46 @@
 			<location filename="../gui_context_menus.h" line="253"/>
 			<source>Install PKG</source>
 			<translation>PKG telepítése</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="299"/>
+			<source>Game</source>
+			<translation>Game</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="305"/>
+			<source>requiresEnableSeparateUpdateFolder_MSG</source>
+			<translation>This feature requires the 'Enable Separate Update Folder' config option to work. If you want to use this feature, please enable it.</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="312"/>
+			<source>This game has no update to delete!</source>
+			<translation>This game has no update to delete!</translation>
+		</message>
+			<message>
+			<location filename="../gui_context_menus.h" line="316"/>
+			<source>Update</source>
+			<translation>Update</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="321"/>
+			<source>This game has no DLC to delete!</source>
+			<translation>This game has no DLC to delete!</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="325"/>
+			<source>DLC</source>
+			<translation>DLC</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="332"/>
+			<source>Delete %1</source>
+			<translation>Delete %1</translation>
+		</message>
+		<message>
+			<location filename="../gui_context_menus.h" line="333"/>
+			<source>Are you sure you want to delete %1's %2 directory?</source>
+			<translation>Are you sure you want to delete %1's %2 directory?</translation>
 		</message>
 	</context>
 	<context>
@@ -405,6 +478,11 @@
 			<translation>Teljesképernyő Engedélyezése</translation>
 		</message>
 		<message>
+			<location filename="../settings_dialog.ui" line="140"/>
+			<source>Enable Separate Update Folder</source>
+			<translation>Enable Separate Update Folder</translation>
+		</message>
+		<message>
 			<location filename="../settings_dialog.ui" line="129"/>
 			<source>Show Splash</source>
 			<translation>Indítóképernyő Mutatása</translation>
@@ -439,12 +517,12 @@
 			<source>Log Filter</source>
 			<translation>Naplózási Filter</translation>
 		</message>
-		<message> 
+		<message>
 			<location filename="../settings_dialog.ui" line="595"/>
 			<source>Input</source>
 			<translation>Bemenet</translation>
 		</message>
-		<message> 
+		<message>
 			<location filename="../settings_dialog.ui" line="611"/>
 			<source>Cursor</source>
 			<translation>Kurzor</translation>
@@ -509,7 +587,7 @@
 			<source>Enable NULL GPU</source>
 			<translation>NULL GPU Engedélyezése</translation>
 		</message>
-		<message> 
+		<message>
 			<location filename="../settings_dialog.ui" line="1111"/>
 			<source>Paths</source>
 			<translation>Útvonalak</translation>
@@ -1044,6 +1122,11 @@
 			<translation>Teljes képernyő engedélyezése:\nAutomatikusan teljes képernyőre állítja a játék ablakát.\nEz a F11 billentyű megnyomásával kapcsolható ki/be.</translation>
 		</message>
 		<message>
+			<location filename="../settings_dialog.cpp" line="293"/>
+			<source>separateUpdatesCheckBox</source>
+			<translation>Enable Separate Update Folder:\nEnables installing game updates into a separate folder for easy management.</translation>
+		</message>
+		<message>
 			<location filename="../settings_dialog.cpp" line="295"/>
 			<source>showSplashCheckBox</source>
 			<translation>Indító képernyő megjelenítése:\nMegjeleníti a játék indító képernyőjét (különleges képet) a játék elindításakor.</translation>
@@ -1083,7 +1166,7 @@
 			<source>GUIgroupBox</source>
 			<translation>Játék címzene lejátszása:\nHa a játék támogatja, engedélyezze a speciális zene lejátszását, amikor a játékot kiválasztja a GUI-ban.</translation>
 		</message>
-		<message> 
+		<message>
 			<location filename="../settings_dialog.cpp" line="450"/>
 			<source>hideCursorGroupBox</source>
 			<translation>Akurátor elrejtése:\nVálassza ki, mikor tűnjön el az egérkurzor:\nSoha: Az egér mindig látható.\nInaktív: Állítson be egy időt, amikor inaktív állapotban eltűnik.\nMindig: soha nem látja az egeret.</translation>
@@ -1289,7 +1372,7 @@
 			<source>Update Available</source>
 			<translation>Frissítés elérhető</translation>
 		</message>
-		<message> 
+		<message>
 			<location filename="../check_update.cpp" line="187"/>
 			<source>Update Channel</source>
 			<translation>Frissítési Csatorna</translation>

@@ -12,7 +12,7 @@
     <x>0</x>
     <y>0</y>
     <width>854</width>
-    <height>630</height>
+    <height>660</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -131,6 +131,13 @@
                   <widget class="QCheckBox" name="fullscreenCheckBox">
                    <property name="text">
                     <string>Enable Fullscreen</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="separateUpdatesCheckBox">
+                   <property name="text">
+                    <string>Enable Separate Update Folder</string>
                    </property>
                   </widget>
                  </item>
