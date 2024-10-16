@@ -225,15 +225,25 @@ const ComputePipeline* PipelineCache::GetComputePipeline() {
 }
 
 bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 33> skip_hashes = {0x72e540be7eaacd3, 0xa1e9015cb60883dc, 0x72e540be7eaacd3, 0x72e540be7eaacd3,  0xa1e9015cb60883dc, 0xec92d84e47b4c747, 0xa1e9015cb60883dc, 0x72e540be7eaacd3,
-        0x81ac71121916cef0, 0x81ac71121916cef0, 0x1198feb94d57a9e4, 0x72e540be7eaacd3,
-        0xa1e9015cb60883dc, 0x81ac71121916cef0, 0x72e540be7eaacd3,  0x72e540be7eaacd3,
-        0x81ac71121916cef0, 0x72e540be7eaacd3,  0x81ac71121916cef0, 0x72e540be7eaacd3,
-        0x81ac71121916cef0, 0x72e540be7eaacd3,  0x72e540be7eaacd3,  0x81ac71121916cef0,
-        0x72e540be7eaacd3,  0x81ac71121916cef0, 0x72e540b6c168777,  0x81ac71121916cef0,
-        0xa1e9015cb60883dc, 0xa1e9015cb60883dc, 0xa1e9015cb60883dc, 0x81ac71121916cef0,
-        0x72e540b6c168777};
-    
+    static constexpr std::array<u64, 66> skip_hashes = {
+        0x81ac71121916cef0, 0x72e540be7eaacd3,  0xa1e9015cb60883dc, 0x3abf50ba16091f46,
+        0x3163fb9f31b0a23e, 0xdc4c674e20e58f76, 0xf5745bb80cd446e3, 0x965ad37d72d727b3,
+        0xed260a31f8f6c682, 0x1e8f6e6aae9d46c2, 0xfd5f44ab06133ddd, 0x1c224b46d5a85909,
+        0x84e5a4dbc7c0c591, 0x17c8dd0bcb5fd88e, 0xdc4c674e153218fe, 0xd76d80a5897d8664,
+        0x714c57b8a300804d, 0x9554eb53af248d49, 0xd0a7339ac88a0808, 0xc8c2e9625aca97f3,
+        0xf5745bb80cee46e5, 0x307d19ec8da36694, 0x5a86bb69e9da619a, 0xf337842af939ea3a,
+        0xeda81c062603bf0b, 0x330fc1531bb3473b, 0x965ad37df78c6090, 0xed260a31f78c6090,
+        0xcb936483d673971f, 0x1458d67e112c3ef9, 0xca743277c769f815, 0xca743277eb7268c8,
+        0xa1a27b61230be3d9, 0x761938cf0f834521, 0x753684b80230fe3e, 0x761938cf0f67451f,
+        0x932fdcdd1fd1d60c, 0x57f1937bc7c0c591, 0xd0a7339ac5189d22, 0x1458d67ecad00ed7,
+        0x9554eb53c5189d22, 0x84e5a4db8c4aca45, 0x3abf50baddd4decb, 0xf337842ab7e9f40a,
+        0x3163fb9f22a7308f, 0xfd5f44ab5be41430, 0x753684b83c7f90fb, 0x714c57b8f2956e32,
+        0xc8c2e96298e879b9, 0xeda81c06cd96e3e9, 0x1c224b46f362e5c1, 0x5a86bb6938c94f72,
+        0xf5745bb828b567e9, 0x1458d67eccfbd0e9, 0x330fc1537ed8ef75, 0x84e5a4dbfdffdb4c,
+        0x17c8dd0bb7c0eacb, 0x965ad37d83d138d0, 0xf98d0d70f8309431, 0x17c8dd0be1cde024,
+        0xdc4c674e9ffdb55e, 0x5a86bb69a96404e5, 0x714c57b80680c11a, 0xcb93648366ca7c94,
+        0xca7432779fb7d95a, 0x761938cffb9acc6f
+    };    
     if (std::ranges::contains(skip_hashes, shader_hash)) {
         return true;
     }
@@ -416,7 +426,7 @@ bool PipelineCache::RefreshGraphicsKey() {
         ++remapped_cb;
     }
         return true;
-    }
+}
 
 bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};
