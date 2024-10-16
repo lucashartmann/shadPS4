@@ -272,7 +272,6 @@ void ImageInfo::UpdateSize() {
         case AmdGpu::TilingMode::Display_MacroTiled:
         case AmdGpu::TilingMode::Texture_MacroTiled:
         case AmdGpu::TilingMode::Depth_MacroTiled: {
-            ASSERT(!props.is_block);
             ASSERT(num_samples == 1);
             std::tie(mip_info.pitch, mip_info.size) =
                 ImageSizeMacroTiled(mip_w, mip_h, bpp, num_samples, tiling_idx);
