@@ -403,7 +403,8 @@ bool PipelineCache::RefreshGraphicsKey() {
 }
 
 bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 0> skip_hashes = {};
+    static constexpr std::array<u64, 3> skip_hashes = {0xec602a8fee029fd0, 0x65854b2b21f19601,
+                                                       0x793f1066476b16c9};
     if (std::ranges::contains(skip_hashes, shader_hash)) {
         return true;
     }
