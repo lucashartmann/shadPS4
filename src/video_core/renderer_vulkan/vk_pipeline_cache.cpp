@@ -415,8 +415,8 @@ bool PipelineCache::RefreshGraphicsKey() {
 
         ++remapped_cb;
     }
-    return true;
-}
+        return true;
+    }
 
 bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};

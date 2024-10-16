@@ -127,6 +127,9 @@ SettingsDialog::SettingsDialog(std::span<const QString> physical_devices, QWidge
         connect(ui->fullscreenCheckBox, &QCheckBox::stateChanged, this,
                 [](int val) { Config::setFullscreenMode(val); });
 
+        connect(ui->separateUpdatesCheckBox, &QCheckBox::stateChanged, this,
+                [](int val) { Config::setSeparateUpdateEnabled(val); });
+
         connect(ui->showSplashCheckBox, &QCheckBox::stateChanged, this,
                 [](int val) { Config::setShowSplash(val); });
 
@@ -267,6 +270,7 @@ SettingsDialog::SettingsDialog(std::span<const QString> physical_devices, QWidge
         ui->consoleLanguageGroupBox->installEventFilter(this);
         ui->emulatorLanguageGroupBox->installEventFilter(this);
         ui->fullscreenCheckBox->installEventFilter(this);
+        ui->separateUpdatesCheckBox->installEventFilter(this);
         ui->showSplashCheckBox->installEventFilter(this);
         ui->ps4proCheckBox->installEventFilter(this);
         ui->discordRPCCheckbox->installEventFilter(this);
@@ -323,6 +327,7 @@ void SettingsDialog::LoadValuesFromConfig() {
     ui->BGMVolumeSlider->setValue((Config::getBGMvolume()));
     ui->discordRPCCheckbox->setChecked(Config::getEnableDiscordRPC());
     ui->fullscreenCheckBox->setChecked(Config::isFullscreenMode());
+    ui->separateUpdatesCheckBox->setChecked(Config::getSeparateUpdateEnabled());
     ui->showSplashCheckBox->setChecked(Config::showSplash());
     ui->ps4proCheckBox->setChecked(Config::isNeoMode());
     ui->logTypeComboBox->setCurrentText(QString::fromStdString(Config::getLogType()));
@@ -431,6 +436,8 @@ void SettingsDialog::updateNoteTextEdit(const QString& elementName) {
         text = tr("emulatorLanguageGroupBox");
     } else if (elementName == "fullscreenCheckBox") {
         text = tr("fullscreenCheckBox");
+    } else if (elementName == "separateUpdatesCheckBox") {
+        text = tr("separateUpdatesCheckBox");
     } else if (elementName == "showSplashCheckBox") {
         text = tr("showSplashCheckBox");
     } else if (elementName == "ps4proCheckBox") {

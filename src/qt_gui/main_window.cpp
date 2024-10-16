@@ -676,10 +676,14 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
         InstallDirSelect ids;
         ids.exec();
         auto game_install_dir = ids.getSelectedDirectory();
-        auto extract_path = game_install_dir / pkg.GetTitleID();
+        auto game_folder_path = game_install_dir / pkg.GetTitleID();
         QString pkgType = QString::fromStdString(pkg.GetPkgFlags());
+        bool use_game_update = pkgType.contains("PATCH") && Config::getSeparateUpdateEnabled();
+        auto game_update_path = use_game_update
+                                    ? game_install_dir / (std::string(pkg.GetTitleID()) + "-UPDATE")
+                                    : game_folder_path;
         QString gameDirPath;
-        Common::FS::PathToQString(gameDirPath, extract_path);
+        Common::FS::PathToQString(gameDirPath, game_folder_path);
         QDir game_dir(gameDirPath);
         if (game_dir.exists()) {
             QMessageBox msgBox;
@@ -715,7 +719,11 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
                     QMessageBox::critical(this, tr("PKG ERROR"), "PSF file there is no APP_VER");
                     return;
                 }
-                psf.Open(extract_path / "sce_sys" / "param.sfo");
+                std::filesystem::path sce_folder_path =
+                    std::filesystem::exists(game_update_path / "sce_sys" / "param.sfo")
+                        ? game_update_path / "sce_sys" / "param.sfo"
+                        : game_folder_path / "sce_sys" / "param.sfo";
+                psf.Open(sce_folder_path);
                 QString game_app_version;
                 if (auto app_ver = psf.GetString("APP_VER"); app_ver.has_value()) {
                     game_app_version = QString::fromStdString(std::string{*app_ver});
@@ -764,7 +772,7 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
                     addonMsgBox.setDefaultButton(QMessageBox::No);
                     int result = addonMsgBox.exec();
                     if (result == QMessageBox::Yes) {
-                        extract_path = addon_extract_path;
+                        game_update_path = addon_extract_path;
                     } else {
                         return;
                     }
@@ -775,7 +783,7 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
                     msgBox.setDefaultButton(QMessageBox::No);
                     int result = msgBox.exec();
                     if (result == QMessageBox::Yes) {
-                        extract_path = addon_extract_path;
+                        game_update_path = addon_extract_path;
                     } else {
                         return;
                     }
@@ -801,8 +809,7 @@ void MainWindow::InstallDragDropPkg(std::filesystem::path file, int pkgNum, int 
             }
             // what else?
         }
-
-        if (!pkg.Extract(file, extract_path, failreason)) {
+        if (!pkg.Extract(file, game_update_path, failreason)) {
             QMessageBox::critical(this, tr("PKG ERROR"), QString::fromStdString(failreason));
         } else {
             int nfiles = pkg.GetNumberOfFiles();
