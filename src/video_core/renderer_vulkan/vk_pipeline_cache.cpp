@@ -181,26 +181,6 @@ PipelineCache::PipelineCache(const Instance& instance_, Scheduler& scheduler_,
 PipelineCache::~PipelineCache() = default;
 
 const GraphicsPipeline* PipelineCache::GetGraphicsPipeline() {
-    const auto& regs = liverpool->regs;
-    // Tessellation is unsupported so skip the draw to avoid locking up the driver.
-    if (regs.primitive_type == AmdGpu::PrimitiveType::PatchPrimitive) {
-        return nullptr;
-    }
-    // There are several cases (e.g. FCE, FMask/HTile decompression) where we don't need to do an
-    // actual draw hence can skip pipeline creation.
-    if (regs.color_control.mode == Liverpool::ColorControl::OperationMode::EliminateFastClear) {
-        LOG_TRACE(Render_Vulkan, "FCE pass skipped");
-        return nullptr;
-    }
-    if (regs.color_control.mode == Liverpool::ColorControl::OperationMode::FmaskDecompress) {
-        // TODO: check for a valid MRT1 to promote the draw to the resolve pass.
-        LOG_TRACE(Render_Vulkan, "FMask decompression pass skipped");
-        return nullptr;
-    }
-    if (regs.primitive_type == AmdGpu::PrimitiveType::None) {
-        LOG_TRACE(Render_Vulkan, "Primitive type 'None' skipped");
-        return nullptr;
-    }
     if (!RefreshGraphicsKey()) {
         return nullptr;
     }
@@ -334,7 +314,7 @@ bool PipelineCache::RefreshGraphicsKey() {
             infos[stage_out_idx] = nullptr;
             return false;
         }
-
+        
         const auto* pgm = regs.ProgramForStage(stage_in_idx);
         if (!pgm || !pgm->Address<u32*>()) {
             key.stage_hashes[stage_out_idx] = 0;
@@ -347,6 +327,10 @@ bool PipelineCache::RefreshGraphicsKey() {
             LOG_WARNING(Render_Vulkan, "Invalid binary info structure!");
             key.stage_hashes[stage_out_idx] = 0;
             infos[stage_out_idx] = nullptr;
+            return false;
+        }
+
+        if (ShouldSkipShader(bininfo->shader_hash, "graphics")) {
             return false;
         }
 
@@ -425,13 +409,16 @@ bool PipelineCache::RefreshGraphicsKey() {
 
         ++remapped_cb;
     }
-        return true;
+    return true;
 }
 
 bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};
     const auto* cs_pgm = &liverpool->regs.cs_program;
     const auto cs_params = Liverpool::GetParams(*cs_pgm);
+    if (ShouldSkipShader(cs_params.hash, "compute")) {
+        return false;
+    }
     std::tie(infos[0], modules[0], compute_key) =
         GetProgram(Shader::Stage::Compute, cs_params, binding);
     return true;
