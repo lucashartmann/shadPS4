@@ -204,6 +204,14 @@ const ComputePipeline* PipelineCache::GetComputePipeline() {
     return it->second;
 }
 
+bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
+    static constexpr std::array<u64, 0> skip_hashes = {};
+    if (std::ranges::contains(skip_hashes, shader_hash)) {
+        return true;
+    }
+    return false;
+}
+
 bool PipelineCache::RefreshGraphicsKey() {
     std::memset(&graphics_key, 0, sizeof(GraphicsPipelineKey));
 
@@ -288,7 +296,7 @@ bool PipelineCache::RefreshGraphicsKey() {
             infos[stage_out_idx] = nullptr;
             return false;
         }
-
+        
         const auto* pgm = regs.ProgramForStage(stage_in_idx);
         if (!pgm || !pgm->Address<u32*>()) {
             key.stage_hashes[stage_out_idx] = 0;
@@ -301,6 +309,10 @@ bool PipelineCache::RefreshGraphicsKey() {
             LOG_WARNING(Render_Vulkan, "Invalid binary info structure!");
             key.stage_hashes[stage_out_idx] = 0;
             infos[stage_out_idx] = nullptr;
+            return false;
+        }
+
+        if (ShouldSkipShader(bininfo->shader_hash, "graphics")) {
             return false;
         }
 
@@ -382,18 +394,13 @@ bool PipelineCache::RefreshGraphicsKey() {
     return true;
 }
 
-bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 0> skip_hashes = {};
-    if (std::ranges::contains(skip_hashes, shader_hash)) {
-        return true;
-    }
-    return false;
-}
-
 bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};
     const auto* cs_pgm = &liverpool->regs.cs_program;
     const auto cs_params = Liverpool::GetParams(*cs_pgm);
+    if (ShouldSkipShader(cs_params.hash, "compute")) {
+        return false;
+    }
     std::tie(infos[0], modules[0], compute_key) =
         GetProgram(Shader::Stage::Compute, cs_params, binding);
     return true;
