@@ -142,8 +142,11 @@ if (WIN32)
 endif()
 
 # half
-add_library(half INTERFACE)
-target_include_directories(half INTERFACE half/include)
+if (NOT TARGET half::half)
+    add_library(half INTERFACE)
+    target_include_directories(half INTERFACE half/include)
+    add_library(half::half ALIAS half)
+endif()
 
 if (APPLE)
     # date
@@ -185,9 +188,11 @@ if (NOT TARGET pugixml::pugixml)
 endif()
 
 # Discord RPC
-set(BUILD_EXAMPLES OFF)
-add_subdirectory(discord-rpc/)
-target_include_directories(discord-rpc INTERFACE discord-rpc/include)
+if (ENABLE_DISCORD_RPC)
+    set(BUILD_EXAMPLES OFF)
+    add_subdirectory(discord-rpc/)
+    target_include_directories(discord-rpc INTERFACE discord-rpc/include)
+endif()
 
 # GCN Headers
 add_subdirectory(gcn)
