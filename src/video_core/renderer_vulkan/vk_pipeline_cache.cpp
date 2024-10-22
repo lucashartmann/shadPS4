@@ -412,28 +412,6 @@ bool PipelineCache::RefreshGraphicsKey() {
     return true;
 }
 
-<<<<<<<<< Temporary merge branch 1
-=========
-bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 0> skip_hashes = {};
-    if (std::ranges::contains(skip_hashes, shader_hash)) {
-        return true;
-    }
-    return false;
-}
-
->>>>>>>>> Temporary merge branch 2
-<<<<<<<<< Temporary merge branch 1
-=========
-bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 0> skip_hashes = {};
-    if (std::ranges::contains(skip_hashes, shader_hash)) {
-        return true;
-    }
-    return false;
-}
-
->>>>>>>>> Temporary merge branch 2
 bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};
     const auto* cs_pgm = &liverpool->regs.cs_program;
