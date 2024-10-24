@@ -1271,8 +1271,7 @@ private:
             void unhandled_exception() {
                 try {
                     std::rethrow_exception(std::current_exception());
-                } catch (const std::exception& e) {
-                    UNREACHABLE_MSG("Unhandled exception: {}", e.what());
+                } catch (const std::exception& e) {                 
                 }
             }
             void return_void() {}
