@@ -4,10 +4,9 @@
 #include "fiber.h"
 
 #include "common/logging/log.h"
-#include "common/singleton.h"
 #include "core/libraries/error_codes.h"
 #include "core/libraries/libs.h"
-#include "core/linker.h"
+#include "core/tls.h"
 
 #ifdef _WIN64
 #include <windows.h>
@@ -15,7 +14,7 @@
 
 namespace Libraries::Fiber {
 
-constexpr static u64 kFiberSignature = 0x054ad954;
+static constexpr u64 kFiberSignature = 0x054ad954;
 
 thread_local SceFiber* gCurrentFiber = nullptr;
 thread_local void* gFiberThread = nullptr;
@@ -31,9 +30,7 @@ void FiberEntry(void* param) {
         argRun = *fiber->pArgRun;
     }
 
-    const auto* linker = Common::Singleton<Core::Linker>::Instance();
-    linker->ExecuteGuest(fiber->entry, fiber->argOnInitialize, argRun);
-
+    Core::ExecuteGuest(fiber->entry, fiber->argOnInitialize, argRun);
     UNREACHABLE();
 }
 

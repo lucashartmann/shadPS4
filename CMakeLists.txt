@@ -194,31 +194,34 @@ set(GNM_LIB src/core/libraries/gnmdriver/gnmdriver.cpp
             src/core/libraries/gnmdriver/gnm_error.h
 )
 
-set(KERNEL_LIB
-               src/core/libraries/kernel/event_flag/event_flag.cpp
-               src/core/libraries/kernel/event_flag/event_flag.h
-               src/core/libraries/kernel/event_flag/event_flag_obj.cpp
-               src/core/libraries/kernel/event_flag/event_flag_obj.h
+set(KERNEL_LIB src/core/libraries/kernel/threads/condvar.cpp
+               src/core/libraries/kernel/threads/event_flag.cpp
+               src/core/libraries/kernel/threads/mutex.cpp
+               src/core/libraries/kernel/threads/pthread_attr.cpp
+               src/core/libraries/kernel/threads/pthread_clean.cpp
+               src/core/libraries/kernel/threads/pthread.cpp
+               src/core/libraries/kernel/threads/pthread_spec.cpp
                src/core/libraries/kernel/threads/rwlock.cpp
                src/core/libraries/kernel/threads/semaphore.cpp
-               src/core/libraries/kernel/threads/keys.cpp
-               src/core/libraries/kernel/threads/threads.h
-               src/core/libraries/kernel/cpu_management.cpp
-               src/core/libraries/kernel/cpu_management.h
-               src/core/libraries/kernel/event_queue.cpp
-               src/core/libraries/kernel/event_queue.h
-               src/core/libraries/kernel/event_queues.cpp
-               src/core/libraries/kernel/event_queues.h
+               src/core/libraries/kernel/threads/stack.cpp
+               src/core/libraries/kernel/threads/tcb.cpp
+               src/core/libraries/kernel/threads/pthread.h
+               src/core/libraries/kernel/threads/thread_state.cpp
+               src/core/libraries/kernel/threads/thread_state.h
+               src/core/libraries/kernel/process.cpp
+               src/core/libraries/kernel/process.h
+               src/core/libraries/kernel/equeue.cpp
+               src/core/libraries/kernel/equeue.h
                src/core/libraries/kernel/file_system.cpp
                src/core/libraries/kernel/file_system.h
-               src/core/libraries/kernel/libkernel.cpp
-               src/core/libraries/kernel/libkernel.h
-               src/core/libraries/kernel/memory_management.cpp
-               src/core/libraries/kernel/memory_management.h
-               src/core/libraries/kernel/thread_management.cpp
-               src/core/libraries/kernel/thread_management.h
-               src/core/libraries/kernel/time_management.cpp
-               src/core/libraries/kernel/time_management.h
+               src/core/libraries/kernel/kernel.cpp
+               src/core/libraries/kernel/kernel.h
+               src/core/libraries/kernel/memory.cpp
+               src/core/libraries/kernel/memory.h
+               src/core/libraries/kernel/threads.cpp
+               src/core/libraries/kernel/threads.h
+               src/core/libraries/kernel/time.cpp
+               src/core/libraries/kernel/time.h
 )
 
 set(NETWORK_LIBS src/core/libraries/network/http.cpp
@@ -348,6 +351,13 @@ set(FIBER_LIB src/core/libraries/fiber/fiber.cpp
               src/core/libraries/fiber/fiber.h
 )
 
+set(VDEC_LIB src/core/libraries/videodec/videodec2_impl.cpp
+             src/core/libraries/videodec/videodec2_impl.h
+             src/core/libraries/videodec/videodec2.cpp
+             src/core/libraries/videodec/videodec2.h
+             src/core/libraries/videodec/videodec2_avc.h
+)
+
 set(NP_LIBS src/core/libraries/np_manager/np_manager.cpp
             src/core/libraries/np_manager/np_manager.h
             src/core/libraries/np_score/np_score.cpp
@@ -429,7 +439,10 @@ set(COMMON src/common/logging/backend.cpp
            src/common/signal_context.h
            src/common/signal_context.cpp
            src/common/singleton.h
+           src/common/slab_heap.h
            src/common/slot_vector.h
+           src/common/spin_lock.cpp
+           src/common/spin_lock.h
            src/common/string_util.cpp
            src/common/string_util.h
            src/common/thread.cpp
@@ -503,6 +516,7 @@ set(CORE src/core/aerolib/stubs.cpp
          ${MISC_LIBS}
          ${IME_LIB}
          ${FIBER_LIB}
+         ${VDEC_LIB}
          ${DEV_TOOLS}
          src/core/debug_state.cpp
          src/core/debug_state.h

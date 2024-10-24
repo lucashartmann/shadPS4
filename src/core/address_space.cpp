@@ -7,7 +7,7 @@
 #include "common/assert.h"
 #include "common/error.h"
 #include "core/address_space.h"
-#include "core/libraries/kernel/memory_management.h"
+#include "core/libraries/kernel/memory.h"
 #include "core/memory.h"
 #include "libraries/error_codes.h"
 
@@ -262,7 +262,8 @@ struct AddressSpace::Impl {
         }
 
         // Use assert to ensure success in debug builds
-        DEBUG_ASSERT(success && "Failed to change virtual memory protection");
+        //DEBUG_ASSERT(success && "Failed to change virtual memory protection");
+        ASSERT_MSG(success, "Failed to change virtual memory protection: {}", Common::GetLastErrorMsg());
     }
 
     HANDLE process{};

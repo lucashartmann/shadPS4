@@ -9,10 +9,10 @@
 #include "common/string_util.h"
 #include "core/aerolib/aerolib.h"
 #include "core/cpu_patches.h"
-#include "core/linker.h"
 #include "core/loader/dwarf.h"
 #include "core/memory.h"
 #include "core/module.h"
+#include "core/tls.h"
 
 namespace Core {
 
@@ -70,9 +70,8 @@ Module::~Module() = default;
 
 s32 Module::Start(size_t args, const void* argp, void* param) {
     LOG_INFO(Core_Linker, "Module started : {}", name);
-    const auto* linker = Common::Singleton<Core::Linker>::Instance();
     const VAddr addr = dynamic_info.init_virtual_addr + GetBaseAddress();
-    return linker->ExecuteGuest(reinterpret_cast<EntryFunc>(addr), args, argp, param);
+    return ExecuteGuest(reinterpret_cast<EntryFunc>(addr), args, argp, param);
 }
 
 void Module::LoadModuleToMemory(u32& max_tls_index) {
@@ -167,9 +166,7 @@ void Module::LoadModuleToMemory(u32& max_tls_index) {
             tls.align = elf_pheader[i].p_align;
             tls.image_virtual_addr = elf_pheader[i].p_vaddr + base_virtual_addr;
             tls.image_size = GetAlignedSize(elf_pheader[i]);
-            if (tls.image_size != 0) {
-                tls.modid = ++max_tls_index;
-            }
+            tls.modid = ++max_tls_index;
             LOG_INFO(Core_Linker, "TLS virtual address = {:#x}", tls.image_virtual_addr);
             LOG_INFO(Core_Linker, "TLS image size      = {}", tls.image_size);
             break;
