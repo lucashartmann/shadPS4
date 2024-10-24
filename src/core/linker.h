@@ -115,6 +115,14 @@ public:
         }
     }
 
+    template <class ReturnType, class... FuncArgs, class... CallArgs>
+    ReturnType ExecuteGuest(PS4_SYSV_ABI ReturnType (*func)(FuncArgs...),
+                            CallArgs&&... args) const {
+        // Make sure TLS is initialized for the thread before entering guest.
+        EnsureThreadInitialized();
+        return ExecuteGuestWithoutTls(func, args...);
+    }
+
     void SetHeapAPI(void* func[]) {
         heap_api = reinterpret_cast<AppHeapAPI>(func);
     }
@@ -138,6 +146,12 @@ public:
 
 private:
     const Module* FindExportedModule(const ModuleInfo& m, const LibraryInfo& l);
+
+    template <class ReturnType, class... FuncArgs, class... CallArgs>
+    ReturnType ExecuteGuestWithoutTls(PS4_SYSV_ABI ReturnType (*func)(FuncArgs...),
+                                      CallArgs&&... args) const {
+        return func(std::forward<CallArgs>(args)...);
+    }
 
     MemoryManager* memory;
     Libraries::Kernel::Thread main_thread;
