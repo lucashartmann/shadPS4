@@ -224,6 +224,7 @@ bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
         0xdc4c674e9ffdb55e, 0x5a86bb69a96404e5, 0x714c57b80680c11a, 0xcb93648366ca7c94,
         0xca7432779fb7d95a, 0x761938cffb9acc6f
     };  
+
     if (std::ranges::contains(skip_hashes, shader_hash)) {
         return true;
     }
