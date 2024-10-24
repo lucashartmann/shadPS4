@@ -76,7 +76,6 @@ int PS4_SYSV_ABI sceAjmInstanceCodecType() {
 }
 
 int PS4_SYSV_ABI sceAjmInstanceCreate() {
-    LOG_ERROR(Lib_Ajm, "(STUBBED) called");
     return ORBIS_OK;
 }
 

@@ -431,7 +431,6 @@ void Translator::S_MOVK(const GcnInst& inst) {
     const auto simm16 = inst.control.sopk.simm;
     if (simm16 & (1 << 15)) {
         // TODO: need to verify the case of imm sign extension
-        UNREACHABLE();
     }
     SetDst(inst.dst[0], ir.Imm32(simm16));
 }
