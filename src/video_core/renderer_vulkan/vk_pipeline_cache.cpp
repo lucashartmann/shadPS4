@@ -202,6 +202,15 @@ const ComputePipeline* PipelineCache::GetComputePipeline() {
     return it->second;
 }
 
+bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
+    static constexpr std::array<u64, 0> skip_hashes = {};
+
+    if (std::ranges::contains(skip_hashes, shader_hash)) {
+        return true;
+    }
+    return false;
+}
+
 bool PipelineCache::RefreshGraphicsKey() {
     std::memset(&graphics_key, 0, sizeof(GraphicsPipelineKey));
 
@@ -301,6 +310,10 @@ bool PipelineCache::RefreshGraphicsKey() {
             return false;
         }
 
+        if (ShouldSkipShader(bininfo.shader_hash, "graphics")) {
+             return false;
+        }
+
         auto params = Liverpool::GetParams(*pgm);
         std::tie(infos[stage_out_idx], modules[stage_out_idx], key.stage_hashes[stage_out_idx]) =
             GetProgram(stage_in, params, binding);
@@ -392,6 +405,9 @@ bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};
     const auto* cs_pgm = &liverpool->regs.cs_program;
     const auto cs_params = Liverpool::GetParams(*cs_pgm);
+    if (ShouldSkipShader(cs_params.hash, "compute")) {
+        return false;
+    }
     std::tie(infos[0], modules[0], compute_key) =
         GetProgram(Shader::Stage::Compute, cs_params, binding);
     return true;

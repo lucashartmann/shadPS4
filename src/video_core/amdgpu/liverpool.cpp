@@ -624,7 +624,10 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
             case PM4ItOpcode::WaitOnCeCounter: {
                 while (cblock.ce_count <= cblock.de_count) {
                     TracyFiberLeave;
-                    ce_task.handle.resume();
+                    if (ce_task.handle && !ce_task.handle.done()) {
+                        ce_task.handle.resume();
+                    } else {
+                    }
                     TracyFiberEnter(dcb_task_name);
                 }
                 break;
