@@ -206,11 +206,9 @@ const ComputePipeline* PipelineCache::GetComputePipeline() {
 }
 
 bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
-    static constexpr std::array<u64, 1> skip_hashes = {0x6d99d4d026d87a32
-                                                       };
-
+    static constexpr std::array<u64, 1> skip_hashes = {0x6d99d4d026d87a32};
     if (std::ranges::contains(skip_hashes, shader_hash)) {
-        return true;
+       return true;
     }
     return false;
 }
@@ -315,7 +313,7 @@ bool PipelineCache::RefreshGraphicsKey() {
         }
 
         if (ShouldSkipShader(bininfo.shader_hash, "graphics")) {
-             return false;
+            return false;
         }
 
         auto params = Liverpool::GetParams(*pgm);
