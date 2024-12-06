@@ -393,7 +393,7 @@ std::pair<vk::Buffer, u32> TileManager::TryDetile(vk::Buffer in_buffer, u32 in_o
     if (!detiler) {
         if (image.info.tiling_mode != AmdGpu::TilingMode::Texture_MacroTiled &&
             image.info.tiling_mode != AmdGpu::TilingMode::Display_MacroTiled) {
-            //LOG_ERROR(Render_Vulkan, "Unsupported tiled image: {} ({})",
+            // LOG_ERROR(Render_Vulkan, "Unsupported tiled image: {} ({})",
             //          vk::to_string(image.info.pixel_format), NameOf(image.info.tiling_mode));
         }
         return {in_buffer, in_offset};
