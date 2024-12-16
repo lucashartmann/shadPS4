@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 shadPS4 Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#pragma once
+
 #include <xxhash.h>
 
 #include "common/types.h"
@@ -27,6 +29,7 @@ using Liverpool = AmdGpu::Liverpool;
 
 struct GraphicsPipelineKey {
     std::array<size_t, MaxShaderStages> stage_hashes;
+    u32 num_color_attachments;
     std::array<vk::Format, Liverpool::NumColorBuffers> color_formats;
     std::array<AmdGpu::NumberFormat, Liverpool::NumColorBuffers> color_num_formats;
     std::array<Liverpool::ColorBuffer::SwapMode, Liverpool::NumColorBuffers> mrt_swizzles;
@@ -49,6 +52,7 @@ struct GraphicsPipelineKey {
     std::array<Liverpool::BlendControl, Liverpool::NumColorBuffers> blend_controls;
     std::array<vk::ColorComponentFlags, Liverpool::NumColorBuffers> write_masks;
     std::array<vk::Format, MaxVertexBufferCount> vertex_buffer_formats;
+    u32 patch_control_points;
 
     bool operator==(const GraphicsPipelineKey& key) const noexcept {
         return std::memcmp(this, &key, sizeof(key)) == 0;
@@ -70,7 +74,7 @@ public:
 
     bool IsEmbeddedVs() const noexcept {
         static constexpr size_t EmbeddedVsHash = 0x9b2da5cf47f8c29f;
-        return key.stage_hashes[u32(Shader::Stage::Vertex)] == EmbeddedVsHash;
+        return key.stage_hashes[u32(Shader::LogicalStage::Vertex)] == EmbeddedVsHash;
     }
 
     auto GetWriteMasks() const {

@@ -96,12 +96,12 @@ PAddr MemoryManager::PoolExpand(PAddr search_start, PAddr search_end, size_t siz
 PAddr MemoryManager::Allocate(PAddr search_start, PAddr search_end, size_t size, u64 alignment,
                               int memory_type) {
     std::scoped_lock lk{mutex};
+    alignment = alignment > 0 ? alignment : 16_KB;
 
     auto dmem_area = FindDmemArea(search_start);
 
     const auto is_suitable = [&] {
-        const auto aligned_base = alignment > 0 ? Common::AlignUp(dmem_area->second.base, alignment)
-                                                : dmem_area->second.base;
+        const auto aligned_base = Common::AlignUp(dmem_area->second.base, alignment);
         const auto alignment_size = aligned_base - dmem_area->second.base;
         const auto remaining_size =
             dmem_area->second.size >= alignment_size ? dmem_area->second.size - alignment_size : 0;
@@ -114,7 +114,7 @@ PAddr MemoryManager::Allocate(PAddr search_start, PAddr search_end, size_t size,
 
     // Align free position
     PAddr free_addr = dmem_area->second.base;
-    free_addr = alignment > 0 ? Common::AlignUp(free_addr, alignment) : free_addr;
+    free_addr = Common::AlignUp(free_addr, alignment);
 
     // Add the allocated region to the list and commit its pages.
     auto& area = CarveDmemArea(free_addr, size)->second;
@@ -585,6 +585,12 @@ void MemoryManager::NameVirtualRange(VAddr virtual_addr, size_t size, std::strin
     ASSERT_MSG(it->second.Contains(virtual_addr, size),
                "Range provided is not fully contained in vma");
     it->second.name = name;
+}
+
+void MemoryManager::InvalidateMemory(const VAddr addr, const u64 size) const {
+    if (rasterizer) {
+        rasterizer->InvalidateMemory(addr, size);
+    }
 }
 
 VAddr MemoryManager::SearchFree(VAddr virtual_addr, size_t size, u32 alignment) {
