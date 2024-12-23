@@ -53,7 +53,7 @@ void InitHLELibs(Core::Loader::SymbolsResolver* sym) {
     LOG_INFO(Lib_Kernel, "Initializing HLE libraries");
     Libraries::Kernel::RegisterKernel(sym);
     Libraries::GnmDriver::RegisterlibSceGnmDriver(sym);
-    Libraries::VideoOut::RegisterLib(sym);
+    // Libraries::VideoOut::RegisterLib(sym);
     Libraries::UserService::RegisterlibSceUserService(sym);
     Libraries::SystemService::RegisterlibSceSystemService(sym);
     Libraries::CommonDialog::RegisterlibSceCommonDialog(sym);
@@ -79,7 +79,7 @@ void InitHLELibs(Core::Loader::SymbolsResolver* sym) {
     Libraries::Random::RegisterlibSceRandom(sym);
     Libraries::Usbd::RegisterlibSceUsbd(sym);
     Libraries::Pad::RegisterlibScePad(sym);
-    Libraries::Ajm::RegisterlibSceAjm(sym);
+    // Libraries::Ajm::RegisterlibSceAjm(sym);
     Libraries::ErrorDialog::RegisterlibSceErrorDialog(sym);
     Libraries::ImeDialog::RegisterlibSceImeDialog(sym);
     Libraries::AvPlayer::RegisterlibSceAvPlayer(sym);

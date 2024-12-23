@@ -207,6 +207,9 @@ int PS4_SYSV_ABI sceKernelWaitEqueue(SceKernelEqueue eq, SceKernelEvent* ev, int
     }
 
     if (eq->HasSmallTimer()) {
+        if (!timo) {
+            return ORBIS_OK;
+        }
         ASSERT(timo && *timo);
         *out = eq->WaitForSmallTimer(ev, num, *timo);
     } else {

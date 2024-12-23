@@ -6,9 +6,9 @@
 #include "common/bit_field.h"
 #include "common/types.h"
 
-constexpr u64 SCE_KERNEL_MAIN_DMEM_SIZE = 5056_MB; // ~ 5GB
+constexpr u64 SCE_KERNEL_MAIN_DMEM_SIZE = 6056_MB; // ~ 5GB
 // TODO: Confirm this value on hardware.
-constexpr u64 SCE_KERNEL_MAIN_DMEM_SIZE_PRO = 5568_MB; // ~ 5.5GB
+constexpr u64 SCE_KERNEL_MAIN_DMEM_SIZE_PRO = 6568_MB; // ~ 5.5GB
 
 namespace Core::Loader {
 class SymbolsResolver;
