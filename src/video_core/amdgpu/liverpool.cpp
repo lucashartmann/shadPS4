@@ -119,7 +119,6 @@ void Liverpool::Process(std::stop_token stoken) {
 }
 
 Liverpool::Task Liverpool::ProcessCeUpdate(std::span<const u32> ccb) {
-    TracyFiberEnter(ccb_task_name);
 
     while (!ccb.empty()) {
         const auto* header = reinterpret_cast<const PM4Header*>(ccb.data());
@@ -155,9 +154,7 @@ Liverpool::Task Liverpool::ProcessCeUpdate(std::span<const u32> ccb) {
         case PM4ItOpcode::WaitOnDeCounterDiff: {
             const auto diff = it_body[0];
             while ((cblock.de_count - cblock.ce_count) >= diff) {
-                TracyFiberLeave;
                 co_yield {};
-                TracyFiberEnter(ccb_task_name);
             }
             break;
         }
@@ -168,9 +165,7 @@ Liverpool::Task Liverpool::ProcessCeUpdate(std::span<const u32> ccb) {
             while (!task.handle.done()) {
                 task.handle.resume();
 
-                TracyFiberLeave;
                 co_yield {};
-                TracyFiberEnter(ccb_task_name);
             };
             break;
         }
@@ -182,11 +177,9 @@ Liverpool::Task Liverpool::ProcessCeUpdate(std::span<const u32> ccb) {
         ccb = NextPacket(ccb, header->type3.NumWords() + 1);
     }
 
-    TracyFiberLeave;
 }
 
 Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<const u32> ccb) {
-    TracyFiberEnter(dcb_task_name);
 
     cblock.Reset();
 
@@ -197,9 +190,7 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
     if (!ccb.empty()) {
         // In case of CCB provided kick off CE asap to have the constant heap ready to use
         ce_task = ProcessCeUpdate(ccb);
-        TracyFiberLeave;
         ce_task.handle.resume();
-        TracyFiberEnter(dcb_task_name);
     }
 
     const auto base_addr = reinterpret_cast<uintptr_t>(dcb.data());
@@ -623,9 +614,7 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
                 }
                 while (!wait_reg_mem->Test()) {
                     mapped_queues[GfxQueueId].cs_state = regs.cs_program;
-                    TracyFiberLeave;
                     co_yield {};
-                    TracyFiberEnter(dcb_task_name);
                     regs.cs_program = mapped_queues[GfxQueueId].cs_state;
                 }
                 break;
@@ -636,12 +625,10 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
             }
             case PM4ItOpcode::WaitOnCeCounter: {
                 while (cblock.ce_count <= cblock.de_count) {
-                    TracyFiberLeave;
                     // if (ce_task.handle && !ce_task.handle.done()) {
                     ce_task.handle.resume();
                     // } else {
                     // }
-                    TracyFiberEnter(dcb_task_name);
                 }
                 break;
             }
@@ -665,11 +652,9 @@ Liverpool::Task Liverpool::ProcessGraphics(std::span<const u32> dcb, std::span<c
         ce_task.handle.destroy();
     }
 
-    TracyFiberLeave;
 }
 
 Liverpool::Task Liverpool::ProcessCompute(std::span<const u32> acb, int vqid) {
-    TracyFiberEnter(acb_task_name);
 
     auto base_addr = reinterpret_cast<uintptr_t>(acb.data());
     while (!acb.empty()) {
@@ -695,9 +680,7 @@ Liverpool::Task Liverpool::ProcessCompute(std::span<const u32> acb, int vqid) {
             while (!task.handle.done()) {
                 task.handle.resume();
 
-                TracyFiberLeave;
                 co_yield {};
-                TracyFiberEnter(acb_task_name);
             };
             break;
         }
@@ -772,9 +755,7 @@ Liverpool::Task Liverpool::ProcessCompute(std::span<const u32> acb, int vqid) {
             ASSERT(wait_reg_mem->engine.Value() == PM4CmdWaitRegMem::Engine::Me);
             while (!wait_reg_mem->Test()) {
                 mapped_queues[vqid].cs_state = regs.cs_program;
-                TracyFiberLeave;
                 co_yield {};
-                TracyFiberEnter(acb_task_name);
                 regs.cs_program = mapped_queues[vqid].cs_state;
             }
             break;
@@ -792,7 +773,6 @@ Liverpool::Task Liverpool::ProcessCompute(std::span<const u32> acb, int vqid) {
         acb = NextPacket(acb, header->type3.NumWords() + 1);
     }
 
-    TracyFiberLeave;
 }
 
 std::pair<std::span<const u32>, std::span<const u32>> Liverpool::CopyCmdBuffers(
