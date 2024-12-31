@@ -29,7 +29,7 @@ namespace Libraries::GnmDriver {
 
 using namespace AmdGpu;
 
-enum GnmEventIdents : u64 {
+enum GnmEventType : u64 {
     Compute0RelMem = 0x00,
     Compute1RelMem = 0x01,
     Compute2RelMem = 0x02,
@@ -296,17 +296,12 @@ static_assert(CtxInitSequence400.size() == 0x61);
 // In case if `submitDone` is issued we need to block submissions until GPU idle
 static u32 submission_lock{};
 std::condition_variable cv_lock{};
-static std::mutex m_submission{};
+std::mutex m_submission{};
 static u64 frames_submitted{};      // frame counter
 static bool send_init_packet{true}; // initialize HW state before first game's submit in a frame
 static int sdk_version{0};
 
-struct AscQueueInfo {
-    VAddr map_addr;
-    u32* read_addr;
-    u32 ring_size_dw;
-};
-static Common::SlotVector<AscQueueInfo> asc_queues{};
+static u32 asc_next_offs_dw[Liverpool::NumComputeRings];
 static constexpr VAddr tessellation_factors_ring_addr = Core::SYSTEM_RESERVED_MAX - 0xFFFFFFF;
 static constexpr u32 tessellation_offchip_buffer_size = 0x800000u;
 
@@ -342,6 +337,12 @@ static inline u32* ClearContextState(u32* cmdbuf) {
     return cmdbuf + ClearStateSequence.size();
 }
 
+static inline bool IsValidEventType(Platform::InterruptId id) {
+    return (static_cast<u32>(id) >= static_cast<u32>(Platform::InterruptId::Compute0RelMem) &&
+            static_cast<u32>(id) <= static_cast<u32>(Platform::InterruptId::Compute6RelMem)) ||
+           static_cast<u32>(id) == static_cast<u32>(Platform::InterruptId::GfxEop);
+}
+
 s32 PS4_SYSV_ABI sceGnmAddEqEvent(SceKernelEqueue eq, u64 id, void* udata) {
     LOG_TRACE(Lib_GnmDriver, "called");
 
@@ -352,8 +353,7 @@ s32 PS4_SYSV_ABI sceGnmAddEqEvent(SceKernelEqueue eq, u64 id, void* udata) {
     EqueueEvent kernel_event{};
     kernel_event.event.ident = id;
     kernel_event.event.filter = SceKernelEvent::Filter::GraphicsCore;
-    // The library only sets EV_ADD but it is suspected the kernel driver forces EV_CLEAR
-    kernel_event.event.flags = SceKernelEvent::Flags::Clear;
+    kernel_event.event.flags = SceKernelEvent::Flags::Add;
     kernel_event.event.fflags = 0;
     kernel_event.event.data = id;
     kernel_event.event.udata = udata;
@@ -362,11 +362,15 @@ s32 PS4_SYSV_ABI sceGnmAddEqEvent(SceKernelEqueue eq, u64 id, void* udata) {
     Platform::IrqC::Instance()->Register(
         static_cast<Platform::InterruptId>(id),
         [=](Platform::InterruptId irq) {
-            ASSERT_MSG(irq == static_cast<Platform::InterruptId>(id),
-                       "An unexpected IRQ occured"); // We need to convert IRQ# to event id and do
-                                                     // proper filtering in trigger function
-            eq->TriggerEvent(static_cast<GnmEventIdents>(id), SceKernelEvent::Filter::GraphicsCore,
-                             nullptr);
+            ASSERT_MSG(irq == static_cast<Platform::InterruptId>(id), "An unexpected IRQ occured");
+
+            // We need to convert IRQ# to event id
+            if (!IsValidEventType(irq))
+                return;
+
+            // Event data is expected to be an event type as per sceGnmGetEqEventType.
+            eq->TriggerEvent(static_cast<GnmEventType>(id), SceKernelEvent::Filter::GraphicsCore,
+                             reinterpret_cast<void*>(id));
         },
         eq);
     return ORBIS_OK;
@@ -481,7 +485,7 @@ s32 PS4_SYSV_ABI sceGnmDeleteEqEvent(SceKernelEqueue eq, u64 id) {
         return ORBIS_KERNEL_ERROR_EBADF;
     }
 
-    eq->RemoveEvent(id);
+    eq->RemoveEvent(id, SceKernelEvent::Filter::GraphicsCore);
 
     Platform::IrqC::Instance()->Unregister(static_cast<Platform::InterruptId>(id), eq);
     return ORBIS_OK;
@@ -493,6 +497,7 @@ int PS4_SYSV_ABI sceGnmDestroyWorkloadStream() {
 }
 
 void PS4_SYSV_ABI sceGnmDingDong(u32 gnm_vqid, u32 next_offs_dw) {
+    HLE_TRACE;
     LOG_DEBUG(Lib_GnmDriver, "vqid {}, offset_dw {}", gnm_vqid, next_offs_dw);
 
     if (gnm_vqid == 0) {
@@ -506,11 +511,23 @@ void PS4_SYSV_ABI sceGnmDingDong(u32 gnm_vqid, u32 next_offs_dw) {
     }
 
     auto vqid = gnm_vqid - 1;
-    auto& asc_queue = asc_queues[{vqid}];
-    const auto* acb_ptr = reinterpret_cast<const u32*>(asc_queue.map_addr + *asc_queue.read_addr);
-    const auto acb_size = next_offs_dw ? (next_offs_dw << 2u) - *asc_queue.read_addr
-                                       : (asc_queue.ring_size_dw << 2u) - *asc_queue.read_addr;
-    const std::span acb_span{acb_ptr, acb_size >> 2u};
+    auto& asc_queue = liverpool->asc_queues[{vqid}];
+
+    auto& offs_dw = asc_next_offs_dw[vqid];
+
+    if (next_offs_dw < offs_dw && next_offs_dw != 0) {
+        // For cases if a submission is split at the end of the ring buffer, we need to submit it in
+        // two parts to handle the wrap
+        liverpool->SubmitAsc(gnm_vqid, {reinterpret_cast<const u32*>(asc_queue.map_addr) + offs_dw,
+                                        asc_queue.ring_size_dw - offs_dw});
+        offs_dw = 0;
+    }
+
+    const auto* acb_ptr = reinterpret_cast<const u32*>(asc_queue.map_addr) + offs_dw;
+    const auto acb_size_dw = (next_offs_dw ? next_offs_dw : asc_queue.ring_size_dw) - offs_dw;
+    const std::span acb_span{acb_ptr, acb_size_dw};
+
+    asc_next_offs_dw[vqid] = next_offs_dw;
 
     if (DebugState.DumpingCurrentFrame()) {
         static auto last_frame_num = -1LL;
@@ -544,15 +561,12 @@ void PS4_SYSV_ABI sceGnmDingDong(u32 gnm_vqid, u32 next_offs_dw) {
             .base_addr = base_addr,
         });
     }
-    liverpool->SubmitAsc(vqid, acb_span);
-
-    *asc_queue.read_addr += acb_size;
-    *asc_queue.read_addr %= asc_queue.ring_size_dw * 4;
+    liverpool->SubmitAsc(gnm_vqid, acb_span);
 }
 
-int PS4_SYSV_ABI sceGnmDingDongForWorkload() {
-    LOG_ERROR(Lib_GnmDriver, "(STUBBED) called");
-    return ORBIS_OK;
+void PS4_SYSV_ABI sceGnmDingDongForWorkload(u32 gnm_vqid, u32 next_offs_dw, u64 workload_id) {
+    LOG_DEBUG(Lib_GnmDriver, "called, redirecting to sceGnmDingDong");
+    sceGnmDingDong(gnm_vqid, next_offs_dw);
 }
 
 int PS4_SYSV_ABI sceGnmDisableMipStatsReport() {
@@ -971,7 +985,7 @@ s32 PS4_SYSV_ABI sceGnmFindResourcesPublic() {
 }
 
 void PS4_SYSV_ABI sceGnmFlushGarlic() {
-    LOG_WARNING(Lib_GnmDriver, "(STUBBED) called");
+    LOG_TRACE(Lib_GnmDriver, "(STUBBED) called");
 }
 
 int PS4_SYSV_ABI sceGnmGetCoredumpAddress() {
@@ -999,9 +1013,9 @@ int PS4_SYSV_ABI sceGnmGetDebugTimestamp() {
     return ORBIS_OK;
 }
 
-int PS4_SYSV_ABI sceGnmGetEqEventType() {
-    LOG_ERROR(Lib_GnmDriver, "(STUBBED) called");
-    return ORBIS_OK;
+int PS4_SYSV_ABI sceGnmGetEqEventType(const SceKernelEvent* ev) {
+    LOG_TRACE(Lib_GnmDriver, "called");
+    return sceKernelGetEventData(ev);
 }
 
 int PS4_SYSV_ABI sceGnmGetEqTimeStamp() {
@@ -1266,11 +1280,15 @@ int PS4_SYSV_ABI sceGnmMapComputeQueue(u32 pipe_id, u32 queue_id, VAddr ring_bas
         return ORBIS_GNM_ERROR_COMPUTEQUEUE_INVALID_READ_PTR_ADDR;
     }
 
-    auto vqid = asc_queues.insert(VAddr(ring_base_addr), read_ptr_addr, ring_size_dw);
+    const auto vqid =
+        liverpool->asc_queues.insert(VAddr(ring_base_addr), read_ptr_addr, ring_size_dw, pipe_id);
     // We need to offset index as `dingDong` assumes it to be from the range [1..64]
     const auto gnm_vqid = vqid.index + 1;
     LOG_INFO(Lib_GnmDriver, "ASC pipe {} queue {} mapped to vqueue {}", pipe_id, queue_id,
              gnm_vqid);
+
+    const auto& queue = liverpool->asc_queues[vqid];
+    *queue.read_addr = 0u;
 
     return gnm_vqid;
 }
@@ -1642,7 +1660,6 @@ s32 PS4_SYSV_ABI sceGnmSetGsShader(u32* cmdbuf, u32 size, const u32* gs_regs) {
 
 s32 PS4_SYSV_ABI sceGnmSetHsShader(u32* cmdbuf, u32 size, const u32* hs_regs, u32 param4) {
     LOG_TRACE(Lib_GnmDriver, "called");
-
     if (!cmdbuf || size < 0x1E) {
         return -1;
     }
@@ -1660,11 +1677,13 @@ s32 PS4_SYSV_ABI sceGnmSetHsShader(u32* cmdbuf, u32 size, const u32* hs_regs, u3
     cmdbuf = PM4CmdSetData::SetShReg(cmdbuf, 0x108u, hs_regs[0], 0u); // SPI_SHADER_PGM_LO_HS
     cmdbuf = PM4CmdSetData::SetShReg(cmdbuf, 0x10au, hs_regs[2],
                                      hs_regs[3]); // SPI_SHADER_PGM_RSRC1_HS/SPI_SHADER_PGM_RSRC2_HS
-    cmdbuf = PM4CmdSetData::SetContextReg(cmdbuf, 0x286u, hs_regs[5],
-                                          hs_regs[5]);                 // VGT_HOS_MAX_TESS_LEVEL
+    cmdbuf = PM4CmdSetData::SetContextReg(cmdbuf, 0x286u,
+                                          hs_regs[5],                  // VGT_HOS_MAX_TESS_LEVEL
+                                          hs_regs[6]);                 // VGT_HOS_MIN_TESS_LEVEL
     cmdbuf = PM4CmdSetData::SetContextReg(cmdbuf, 0x2dbu, hs_regs[4]); // VGT_TF_PARAM
     cmdbuf = PM4CmdSetData::SetContextReg(cmdbuf, 0x2d6u, param4);     // VGT_LS_HS_CONFIG
 
+    // right padding?
     WriteTrailingNop<11>(cmdbuf);
     return ORBIS_OK;
 }
@@ -2161,6 +2180,7 @@ int PS4_SYSV_ABI sceGnmSubmitCommandBuffersForWorkload(u32 workload, u32 count,
                                                        u32* dcb_sizes_in_bytes,
                                                        const u32* ccb_gpu_addrs[],
                                                        u32* ccb_sizes_in_bytes) {
+    HLE_TRACE;
     LOG_DEBUG(Lib_GnmDriver, "called");
 
     if (!dcb_gpu_addrs || !dcb_sizes_in_bytes) {
@@ -2253,6 +2273,7 @@ s32 PS4_SYSV_ABI sceGnmSubmitCommandBuffers(u32 count, const u32* dcb_gpu_addrs[
 }
 
 int PS4_SYSV_ABI sceGnmSubmitDone() {
+    HLE_TRACE;
     LOG_DEBUG(Lib_GnmDriver, "called");
     WaitGpuIdle();
     if (!liverpool->IsGpuIdle()) {

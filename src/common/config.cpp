@@ -34,6 +34,7 @@ namespace Config {
 static bool isNeo = false;
 static bool isFullscreen = false;
 static bool playBGM = false;
+static bool isTrophyPopupDisabled = false;
 static int BGMvolume = 50;
 static bool enableDiscordRPC = false;
 static u32 screenWidth = 1280;
@@ -64,6 +65,8 @@ static bool vkCrashDiagnostic = false;
 static s16 cursorState = HideCursorState::Idle;
 static int cursorHideTimeout = 5; // 5 seconds (default)
 static bool separateupdatefolder = false;
+static bool compatibilityData = false;
+static bool checkCompatibilityOnStartup = false;
 
 // Gui
 std::vector<std::filesystem::path> settings_install_dirs = {};
@@ -94,6 +97,10 @@ bool isNeoMode() {
 
 bool isFullscreenMode() {
     return isFullscreen;
+}
+
+bool getisTrophyPopupDisabled() {
+    return isTrophyPopupDisabled;
 }
 
 bool getPlayBGM() {
@@ -224,6 +231,14 @@ bool getSeparateUpdateEnabled() {
     return separateupdatefolder;
 }
 
+bool getCompatibilityEnabled() {
+    return compatibilityData;
+}
+
+bool getCheckCompatibilityOnStartup() {
+    return checkCompatibilityOnStartup;
+}
+
 void setGpuId(s32 selectedGpuId) {
     gpuId = selectedGpuId;
 }
@@ -284,6 +299,10 @@ void setFullscreenMode(bool enable) {
     isFullscreen = enable;
 }
 
+void setisTrophyPopupDisabled(bool disable) {
+    isTrophyPopupDisabled = disable;
+}
+
 void setPlayBGM(bool enable) {
     playBGM = enable;
 }
@@ -342,6 +361,14 @@ void setSpecialPadClass(int type) {
 
 void setSeparateUpdateEnabled(bool use) {
     separateupdatefolder = use;
+}
+
+void setCompatibilityEnabled(bool use) {
+    compatibilityData = use;
+}
+
+void setCheckCompatibilityOnStartup(bool use) {
+    checkCompatibilityOnStartup = use;
 }
 
 void setMainWindowGeometry(u32 x, u32 y, u32 w, u32 h) {
@@ -420,6 +447,10 @@ void setRecentFiles(const std::vector<std::string>& recentFiles) {
 
 void setEmulatorLanguage(std::string language) {
     emulator_language = language;
+}
+
+void setGameInstallDirs(const std::vector<std::filesystem::path>& settings_install_dirs_config) {
+    settings_install_dirs = settings_install_dirs_config;
 }
 
 u32 getMainWindowGeometryX() {
@@ -527,6 +558,7 @@ void load(const std::filesystem::path& path) {
         isNeo = toml::find_or<bool>(general, "isPS4Pro", false);
         isFullscreen = toml::find_or<bool>(general, "Fullscreen", false);
         playBGM = toml::find_or<bool>(general, "playBGM", false);
+        isTrophyPopupDisabled = toml::find_or<bool>(general, "isTrophyPopupDisabled", false);
         BGMvolume = toml::find_or<int>(general, "BGMvolume", 50);
         enableDiscordRPC = toml::find_or<bool>(general, "enableDiscordRPC", true);
         logFilter = toml::find_or<std::string>(general, "logFilter", "");
@@ -540,6 +572,9 @@ void load(const std::filesystem::path& path) {
         isShowSplash = toml::find_or<bool>(general, "showSplash", true);
         isAutoUpdate = toml::find_or<bool>(general, "autoUpdate", false);
         separateupdatefolder = toml::find_or<bool>(general, "separateUpdateEnabled", false);
+        compatibilityData = toml::find_or<bool>(general, "compatibilityEnabled", false);
+        checkCompatibilityOnStartup =
+            toml::find_or<bool>(general, "checkCompatibilityOnStartup", false);
     }
 
     if (data.contains("Input")) {
@@ -642,6 +677,7 @@ void save(const std::filesystem::path& path) {
 
     data["General"]["isPS4Pro"] = isNeo;
     data["General"]["Fullscreen"] = isFullscreen;
+    data["General"]["isTrophyPopupDisabled"] = isTrophyPopupDisabled;
     data["General"]["playBGM"] = playBGM;
     data["General"]["BGMvolume"] = BGMvolume;
     data["General"]["enableDiscordRPC"] = enableDiscordRPC;
@@ -652,6 +688,8 @@ void save(const std::filesystem::path& path) {
     data["General"]["showSplash"] = isShowSplash;
     data["General"]["autoUpdate"] = isAutoUpdate;
     data["General"]["separateUpdateEnabled"] = separateupdatefolder;
+    data["General"]["compatibilityEnabled"] = compatibilityData;
+    data["General"]["checkCompatibilityOnStartup"] = checkCompatibilityOnStartup;
     data["Input"]["cursorState"] = cursorState;
     data["Input"]["cursorHideTimeout"] = cursorHideTimeout;
     data["Input"]["backButtonBehavior"] = backButtonBehavior;
@@ -673,14 +711,6 @@ void save(const std::filesystem::path& path) {
     data["Vulkan"]["crashDiagnostic"] = vkCrashDiagnostic;
     data["Debug"]["DebugDump"] = isDebugDump;
     data["Debug"]["CollectShader"] = isShaderDebug;
-    data["GUI"]["theme"] = mw_themes;
-    data["GUI"]["iconSize"] = m_icon_size;
-    data["GUI"]["sliderPos"] = m_slider_pos;
-    data["GUI"]["iconSizeGrid"] = m_icon_size_grid;
-    data["GUI"]["sliderPosGrid"] = m_slider_pos_grid;
-    data["GUI"]["gameTableMode"] = m_table_mode;
-    data["GUI"]["mw_width"] = m_window_size_W;
-    data["GUI"]["mw_height"] = m_window_size_H;
 
     std::vector<std::string> install_dirs;
     for (const auto& dirString : settings_install_dirs) {
@@ -690,6 +720,44 @@ void save(const std::filesystem::path& path) {
 
     data["GUI"]["addonInstallDir"] =
         std::string{fmt::UTF(settings_addon_install_dir.u8string()).data};
+    data["GUI"]["emulatorLanguage"] = emulator_language;
+    data["Settings"]["consoleLanguage"] = m_language;
+
+    std::ofstream file(path, std::ios::binary);
+    file << data;
+    file.close();
+    saveMainWindow(path);
+}
+
+void saveMainWindow(const std::filesystem::path& path) {
+    toml::value data;
+
+    std::error_code error;
+    if (std::filesystem::exists(path, error)) {
+        try {
+            std::ifstream ifs;
+            ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+            ifs.open(path, std::ios_base::binary);
+            data = toml::parse(ifs, std::string{fmt::UTF(path.filename().u8string()).data});
+        } catch (const std::exception& ex) {
+            fmt::print("Exception trying to parse config file. Exception: {}\n", ex.what());
+            return;
+        }
+    } else {
+        if (error) {
+            fmt::print("Filesystem error: {}\n", error.message());
+        }
+        fmt::print("Saving new configuration file {}\n", fmt::UTF(path.u8string()));
+    }
+
+    data["GUI"]["mw_width"] = m_window_size_W;
+    data["GUI"]["mw_height"] = m_window_size_H;
+    data["GUI"]["theme"] = mw_themes;
+    data["GUI"]["iconSize"] = m_icon_size;
+    data["GUI"]["sliderPos"] = m_slider_pos;
+    data["GUI"]["iconSizeGrid"] = m_icon_size_grid;
+    data["GUI"]["sliderPosGrid"] = m_slider_pos_grid;
+    data["GUI"]["gameTableMode"] = m_table_mode;
     data["GUI"]["geometry_x"] = main_window_geometry_x;
     data["GUI"]["geometry_y"] = main_window_geometry_y;
     data["GUI"]["geometry_w"] = main_window_geometry_w;
@@ -697,9 +765,6 @@ void save(const std::filesystem::path& path) {
     data["GUI"]["pkgDirs"] = m_pkg_viewer;
     data["GUI"]["elfDirs"] = m_elf_viewer;
     data["GUI"]["recentFiles"] = m_recent_files;
-    data["GUI"]["emulatorLanguage"] = emulator_language;
-
-    data["Settings"]["consoleLanguage"] = m_language;
 
     std::ofstream file(path, std::ios::binary);
     file << data;
@@ -709,6 +774,7 @@ void save(const std::filesystem::path& path) {
 void setDefaultValues() {
     isNeo = false;
     isFullscreen = false;
+    isTrophyPopupDisabled = false;
     playBGM = false;
     BGMvolume = 50;
     enableDiscordRPC = true;
@@ -743,6 +809,9 @@ void setDefaultValues() {
     emulator_language = "en";
     m_language = 1;
     gpuId = -1;
+    separateupdatefolder = false;
+    compatibilityData = false;
+    checkCompatibilityOnStartup = false;
 }
 
 } // namespace Config

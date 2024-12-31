@@ -22,8 +22,9 @@ struct OrbisKernelMemParam {
     u8* extended_memory_1;
     u64* extended_gpu_page_table;
     u8* extended_memory_2;
-    u64* exnteded_cpu_page_table;
+    u64* extended_cpu_page_table;
 };
+static_assert(sizeof(OrbisKernelMemParam) == 0x38);
 
 struct OrbisProcParam {
     u64 size;
@@ -83,6 +84,15 @@ public:
 
     Module* GetModule(s32 index) const {
         return m_modules.at(index).get();
+    }
+
+    u32 FindByName(const std::filesystem::path& name) const {
+        for (u32 i = 0; i < m_modules.size(); i++) {
+            if (name == m_modules[i]->file) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     u32 MaxTlsIndex() const {

@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 #include <imgui.h>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <stdio.h>
 
 #include "common.h"
@@ -291,6 +291,17 @@ void RegView::Draw() {
             }
             EndMenuBar();
         }
+
+        const char* shader_name = "_";
+        if (data.is_compute) {
+            shader_name = data.cs_data.name.c_str();
+        } else if (selected_shader >= 0) {
+            shader_name = data.stages[selected_shader].name.c_str();
+        }
+
+        TextUnformatted("Shader: ");
+        SameLine();
+        TextUnformatted(shader_name);
 
         if (!data.is_compute &&
             BeginChild("STAGES", {},

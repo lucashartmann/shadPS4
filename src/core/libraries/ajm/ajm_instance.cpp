@@ -5,7 +5,7 @@
 #include "core/libraries/ajm/ajm_instance.h"
 #include "core/libraries/ajm/ajm_mp3.h"
 
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 namespace Libraries::Ajm {
 
@@ -68,11 +68,11 @@ void AjmInstance::ExecuteJob(AjmJob& job) {
         m_codec->Initialize(&params, sizeof(params));
     }
     if (job.input.resample_parameters.has_value()) {
-        UNREACHABLE_MSG("Unimplemented: resample parameters");
+        LOG_ERROR(Lib_Ajm, "Unimplemented: resample parameters");
         m_resample_parameters = job.input.resample_parameters.value();
     }
     if (job.input.format.has_value()) {
-        UNREACHABLE_MSG("Unimplemented: format parameters");
+        LOG_ERROR(Lib_Ajm, "Unimplemented: format parameters");
         m_format = job.input.format.value();
     }
     if (job.input.gapless_decode.has_value()) {

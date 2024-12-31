@@ -11,6 +11,9 @@
 #include <QTreeWidgetItem>
 
 #include "cheats_patches.h"
+#include "common/config.h"
+#include "common/version.h"
+#include "compatibility_info.h"
 #include "game_info.h"
 #include "trophy_viewer.h"
 
@@ -27,8 +30,9 @@
 class GuiContextMenus : public QObject {
     Q_OBJECT
 public:
-    void RequestGameMenu(const QPoint& pos, QVector<GameInfo> m_games, QTableWidget* widget,
-                         bool isList) {
+    void RequestGameMenu(const QPoint& pos, QVector<GameInfo> m_games,
+                         std::shared_ptr<CompatibilityInfoClass> m_compat_info,
+                         QTableWidget* widget, bool isList) {
         QPoint global_pos = widget->viewport()->mapToGlobal(pos);
         int itemID = 0;
         if (isList) {
@@ -91,6 +95,21 @@ public:
 
         menu.addMenu(deleteMenu);
 
+        // Compatibility submenu.
+        QMenu* compatibilityMenu = new QMenu(tr("Compatibility..."), widget);
+        QAction* updateCompatibility = new QAction(tr("Update database"), widget);
+        QAction* viewCompatibilityReport = new QAction(tr("View report"), widget);
+        QAction* submitCompatibilityReport = new QAction(tr("Submit a report"), widget);
+
+        compatibilityMenu->addAction(updateCompatibility);
+        compatibilityMenu->addAction(viewCompatibilityReport);
+        compatibilityMenu->addAction(submitCompatibilityReport);
+
+        menu.addMenu(compatibilityMenu);
+
+        compatibilityMenu->setEnabled(Config::getCompatibilityEnabled());
+        viewCompatibilityReport->setEnabled(!m_games[itemID].compatibility.url.isEmpty());
+
         // Show menu.
         auto selected = menu.exec(global_pos);
         if (!selected) {
@@ -122,11 +141,11 @@ public:
 
         if (selected == &openSfoViewer) {
             PSF psf;
-            QString game_update_path;
-            Common::FS::PathToQString(game_update_path, m_games[itemID].path.concat("-UPDATE"));
             std::filesystem::path game_folder_path = m_games[itemID].path;
-            if (std::filesystem::exists(Common::FS::PathFromQString(game_update_path))) {
-                game_folder_path = Common::FS::PathFromQString(game_update_path);
+            std::filesystem::path game_update_path = game_folder_path;
+            game_update_path += "UPDATE";
+            if (std::filesystem::exists(game_update_path)) {
+                game_folder_path = game_update_path;
             }
             if (psf.Open(game_folder_path / "sce_sys" / "param.sfo")) {
                 int rows = psf.GetEntries().size();
@@ -268,11 +287,11 @@ public:
 #endif
                         QMessageBox::information(
                             nullptr, tr("Shortcut creation"),
-                            QString(tr("Shortcut created successfully!\n %1")).arg(linkPath));
+                            QString(tr("Shortcut created successfully!") + "\n%1").arg(linkPath));
                     } else {
                         QMessageBox::critical(
                             nullptr, tr("Error"),
-                            QString(tr("Error creating shortcut!\n %1")).arg(linkPath));
+                            QString(tr("Error creating shortcut!") + "\n%1").arg(linkPath));
                     }
                 } else {
                     QMessageBox::critical(nullptr, tr("Error"), tr("Failed to convert icon."));
@@ -286,11 +305,11 @@ public:
 #endif
                     QMessageBox::information(
                         nullptr, tr("Shortcut creation"),
-                        QString(tr("Shortcut created successfully!\n %1")).arg(linkPath));
+                        QString(tr("Shortcut created successfully!") + "\n%1").arg(linkPath));
                 } else {
                     QMessageBox::critical(
                         nullptr, tr("Error"),
-                        QString(tr("Error creating shortcut!\n %1")).arg(linkPath));
+                        QString(tr("Error creating shortcut!") + "\n%1").arg(linkPath));
                 }
             }
         }
@@ -320,19 +339,14 @@ public:
             bool error = false;
             QString folder_path, game_update_path, dlc_path;
             Common::FS::PathToQString(folder_path, m_games[itemID].path);
-            Common::FS::PathToQString(game_update_path, m_games[itemID].path.concat("-UPDATE"));
+            game_update_path = folder_path + "-UPDATE";
             Common::FS::PathToQString(
                 dlc_path, Config::getAddonInstallDir() /
                               Common::FS::PathFromQString(folder_path).parent_path().filename());
             QString message_type = tr("Game");
 
             if (selected == deleteUpdate) {
-                if (!Config::getSeparateUpdateEnabled()) {
-                    QMessageBox::critical(nullptr, tr("Error"),
-                                          QString(tr("requiresEnableSeparateUpdateFolder_MSG")));
-                    error = true;
-                } else if (!std::filesystem::exists(
-                               Common::FS::PathFromQString(game_update_path))) {
+                if (!std::filesystem::exists(Common::FS::PathFromQString(game_update_path))) {
                     QMessageBox::critical(nullptr, tr("Error"),
                                           QString(tr("This game has no update to delete!")));
                     error = true;
@@ -360,8 +374,34 @@ public:
                     QMessageBox::Yes | QMessageBox::No);
                 if (reply == QMessageBox::Yes) {
                     dir.removeRecursively();
+                    widget->removeRow(itemID);
                 }
             }
+        }
+
+        if (selected == updateCompatibility) {
+            m_compat_info->UpdateCompatibilityDatabase(widget, true);
+        }
+
+        if (selected == viewCompatibilityReport) {
+            if (!m_games[itemID].compatibility.url.isEmpty())
+                QDesktopServices::openUrl(QUrl(m_games[itemID].compatibility.url));
+        }
+
+        if (selected == submitCompatibilityReport) {
+            QUrl url = QUrl("https://github.com/shadps4-emu/shadps4-game-compatibility/issues/new");
+            QUrlQuery query;
+            query.addQueryItem("template", QString("game_compatibility.yml"));
+            query.addQueryItem(
+                "title", QString("%1 - %2").arg(QString::fromStdString(m_games[itemID].serial),
+                                                QString::fromStdString(m_games[itemID].name)));
+            query.addQueryItem("game-name", QString::fromStdString(m_games[itemID].name));
+            query.addQueryItem("game-code", QString::fromStdString(m_games[itemID].serial));
+            query.addQueryItem("game-version", QString::fromStdString(m_games[itemID].version));
+            query.addQueryItem("emulator-version", QString(Common::VERSION));
+            url.setQuery(query);
+
+            QDesktopServices::openUrl(url);
         }
     }
 

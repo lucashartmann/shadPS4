@@ -3,6 +3,8 @@
 
 #include "shader_recompiler/frontend/translate/translate.h"
 #include "shader_recompiler/ir/reg.h"
+#include "shader_recompiler/profile.h"
+#include "shader_recompiler/runtime_info.h"
 
 namespace Shader::Gcn {
 
@@ -73,10 +75,11 @@ void Translator::EmitDataShare(const GcnInst& inst) {
 void Translator::V_READFIRSTLANE_B32(const GcnInst& inst) {
     const IR::U32 value{GetSrc(inst.src[0])};
 
-    if (info.stage != Stage::Compute) {
-        SetDst(inst.dst[0], value);
-    } else {
+    if (info.l_stage == LogicalStage::Compute ||
+        info.l_stage == LogicalStage::TessellationControl) {
         SetDst(inst.dst[0], ir.ReadFirstLane(value));
+    } else {
+        SetDst(inst.dst[0], value);
     }
 }
 
@@ -202,6 +205,7 @@ void Translator::DS_WRITE(int bit_size, bool is_signed, bool is_pair, bool strid
             addr, ir.Imm32((u32(inst.control.ds.offset1) << 8u) + u32(inst.control.ds.offset0)));
         ir.WriteShared(bit_size, ir.GetVectorReg(data0), addr0);
     }
+    emit_ds_read_barrier = true;
 }
 
 void Translator::DS_SWIZZLE_B32(const GcnInst& inst) {
@@ -218,6 +222,11 @@ void Translator::DS_SWIZZLE_B32(const GcnInst& inst) {
 
 void Translator::DS_READ(int bit_size, bool is_signed, bool is_pair, bool stride64,
                          const GcnInst& inst) {
+    if (emit_ds_read_barrier && profile.needs_lds_barriers) {
+        ir.Barrier();
+        emit_ds_read_barrier = false;
+    }
+
     const IR::U32 addr{ir.GetVectorReg(IR::VectorReg(inst.src[0].code))};
     IR::VectorReg dst_reg{inst.dst[0].code};
     if (is_pair) {

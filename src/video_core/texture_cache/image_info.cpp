@@ -265,9 +265,9 @@ ImageInfo::ImageInfo(const AmdGpu::Liverpool::ColorBuffer& buffer,
                      const AmdGpu::Liverpool::CbDbExtent& hint /*= {}*/) noexcept {
     props.is_tiled = buffer.IsTiled();
     tiling_mode = buffer.GetTilingMode();
-    pixel_format = LiverpoolToVK::SurfaceFormat(buffer.info.format, buffer.NumFormat());
-    num_samples = 1 << buffer.attrib.num_fragments_log2;
-    num_bits = NumBits(buffer.info.format);
+    pixel_format = LiverpoolToVK::SurfaceFormat(buffer.DataFormat(), buffer.NumFormat());
+    num_samples = buffer.NumSamples();
+    num_bits = NumBits(buffer.DataFormat());
     type = vk::ImageType::e2D;
     size.width = hint.Valid() ? hint.width : buffer.Pitch();
     size.height = hint.Valid() ? hint.height : buffer.Height();
@@ -289,7 +289,7 @@ ImageInfo::ImageInfo(const AmdGpu::Liverpool::DepthBuffer& buffer, u32 num_slice
     props.is_tiled = false;
     pixel_format = LiverpoolToVK::DepthFormat(buffer.z_info.format, buffer.stencil_info.format);
     type = vk::ImageType::e2D;
-    num_samples = 1 << buffer.z_info.num_samples; // spec doesn't say it is a log2
+    num_samples = buffer.NumSamples();
     num_bits = buffer.NumBits();
     size.width = hint.Valid() ? hint.width : buffer.Pitch();
     size.height = hint.Valid() ? hint.height : buffer.Height();
@@ -297,6 +297,9 @@ ImageInfo::ImageInfo(const AmdGpu::Liverpool::DepthBuffer& buffer, u32 num_slice
     pitch = buffer.Pitch();
     resources.layers = num_slices;
     meta_info.htile_addr = buffer.z_info.tile_surface_en ? htile_address : 0;
+
+    stencil_addr = buffer.StencilAddress();
+    stencil_size = pitch * size.height * sizeof(u8);
 
     guest_address = buffer.Address();
     const auto depth_slice_sz = buffer.GetDepthSliceSize();
@@ -363,6 +366,9 @@ void ImageInfo::UpdateSize() {
             mip_info.height = mip_h;
             break;
         }
+        case AmdGpu::TilingMode::Texture_Volume:
+            mip_d += (-mip_d) & 3u;
+            [[fallthrough]];
         case AmdGpu::TilingMode::Texture_MicroTiled: {
             std::tie(mip_info.pitch, mip_info.size) =
                 ImageSizeMicroTiled(mip_w, mip_h, bpp, num_samples);

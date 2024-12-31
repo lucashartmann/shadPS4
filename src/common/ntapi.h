@@ -408,7 +408,7 @@ typedef struct _TEB {                             /* win32/win64 */
 #ifdef _WIN64
     PVOID SystemReserved1[30]; /*    /0190 */
 #else
-    PVOID SystemReserved1[26]; /* 10c/     used for krnl386 private data in Wine */
+    PVOID SystemReserved1[26]; /* 10c/     */
 #endif
     char PlaceholderCompatibilityMode;                       /* 174/0280 */
     BOOLEAN PlaceholderHydrationAlwaysExplicit;              /* 175/0281 */
@@ -430,13 +430,13 @@ typedef struct _TEB {                             /* win32/win64 */
     BYTE SpareBytes1[23];                    /* 1b9/     */
     ULONG TxFsContext;                       /* 1d0/     */
 #endif
-    GDI_TEB_BATCH GdiTebBatch;          /* 1d4/02f0 used for ntdll private data in Wine */
+    GDI_TEB_BATCH GdiTebBatch;          /* 1d4/02f0 */
     CLIENT_ID RealClientId;             /* 6b4/07d8 */
     HANDLE GdiCachedProcessHandle;      /* 6bc/07e8 */
     ULONG GdiClientPID;                 /* 6c0/07f0 */
     ULONG GdiClientTID;                 /* 6c4/07f4 */
     PVOID GdiThreadLocaleInfo;          /* 6c8/07f8 */
-    ULONG_PTR Win32ClientInfo[62];      /* 6cc/0800 used for user32 private data in Wine */
+    ULONG_PTR Win32ClientInfo[62];      /* 6cc/0800 */
     PVOID glDispatchTable[233];         /* 7c4/09f0 */
     PVOID glReserved1[29];              /* b68/1138 */
     PVOID glReserved2;                  /* bdc/1220 */
@@ -509,9 +509,21 @@ typedef struct _TEB {                             /* win32/win64 */
 static_assert(offsetof(TEB, DeallocationStack) ==
               0x1478); /* The only member we care about at the moment */
 
-typedef u64(__stdcall* NtClose_t)(HANDLE Handle);
+typedef enum _QUEUE_USER_APC_FLAGS {
+    QueueUserApcFlagsNone,
+    QueueUserApcFlagsSpecialUserApc,
+    QueueUserApcFlagsMaxValue
+} QUEUE_USER_APC_FLAGS;
 
-typedef u64(__stdcall* NtDelayExecution_t)(BOOL Alertable, PLARGE_INTEGER DelayInterval);
+typedef union _USER_APC_OPTION {
+    ULONG_PTR UserApcFlags;
+    HANDLE MemoryReserveHandle;
+} USER_APC_OPTION, *PUSER_APC_OPTION;
+
+using PPS_APC_ROUTINE = void (*)(PVOID ApcArgument1, PVOID ApcArgument2, PVOID ApcArgument3,
+                                 PCONTEXT Context);
+
+typedef u64(__stdcall* NtClose_t)(HANDLE Handle);
 
 typedef u64(__stdcall* NtSetInformationFile_t)(HANDLE FileHandle, PIO_STATUS_BLOCK IoStatusBlock,
                                                PVOID FileInformation, ULONG Length,
@@ -524,11 +536,16 @@ typedef u64(__stdcall* NtCreateThread_t)(PHANDLE ThreadHandle, ACCESS_MASK Desir
 
 typedef u64(__stdcall* NtTerminateThread_t)(HANDLE ThreadHandle, u64 ExitStatus);
 
+typedef u64(__stdcall* NtQueueApcThreadEx_t)(HANDLE ThreadHandle,
+                                             USER_APC_OPTION UserApcReserveHandle,
+                                             PPS_APC_ROUTINE ApcRoutine, PVOID ApcArgument1,
+                                             PVOID ApcArgument2, PVOID ApcArgument3);
+
 extern NtClose_t NtClose;
-extern NtDelayExecution_t NtDelayExecution;
 extern NtSetInformationFile_t NtSetInformationFile;
 extern NtCreateThread_t NtCreateThread;
 extern NtTerminateThread_t NtTerminateThread;
+extern NtQueueApcThreadEx_t NtQueueApcThreadEx;
 
 namespace Common::NtApi {
 void Initialize();

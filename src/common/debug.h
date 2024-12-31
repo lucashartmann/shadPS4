@@ -14,8 +14,14 @@
 #include <tracy/Tracy.hpp>
 
 static inline bool IsProfilerConnected() {
+#if TRACY_ENABLE
     return tracy::GetProfiler().IsConnected();
+#else
+    return false;
+#endif
 }
+
+#define TRACY_GPU_ENABLED 0
 
 #define CUSTOM_LOCK(type, varname)                                                                 \
     tracy::LockableCtx varname {                                                                   \
@@ -57,3 +63,11 @@ enum MarkersPalette : int {
     tracy::SourceLocationData{nullptr, name, TracyFile, (uint32_t)TracyLine, 0};
 
 #define FRAME_END FrameMark
+
+#ifdef TRACY_FIBERS
+#define FIBER_ENTER(name) TracyFiberEnter(name)
+#define FIBER_EXIT TracyFiberLeave
+#else
+#define FIBER_ENTER(name)
+#define FIBER_EXIT
+#endif

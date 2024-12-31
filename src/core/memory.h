@@ -166,7 +166,7 @@ public:
 
     bool TryWriteBacking(void* address, const void* data, u32 num_bytes);
 
-    void SetupMemoryRegions(u64 flexible_size);
+    void SetupMemoryRegions(u64 flexible_size, bool use_extended_mem1, bool use_extended_mem2);
 
     PAddr PoolExpand(PAddr search_start, PAddr search_end, size_t size, u64 alignment);
 
@@ -192,7 +192,7 @@ public:
 
     void PoolDecommit(VAddr virtual_addr, size_t size);
 
-    void UnmapMemory(VAddr virtual_addr, size_t size);
+    s32 UnmapMemory(VAddr virtual_addr, size_t size);
 
     int QueryProtection(VAddr addr, void** start, void** end, u32* prot);
 
@@ -210,6 +210,8 @@ public:
                             void** directMemoryEndOut);
 
     void NameVirtualRange(VAddr virtual_addr, size_t size, std::string_view name);
+
+    void InvalidateMemory(VAddr addr, u64 size) const;
 
 private:
     VMAHandle FindVMA(VAddr target) {
@@ -250,7 +252,7 @@ private:
 
     DMemHandle Split(DMemHandle dmem_handle, size_t offset_in_area);
 
-    void UnmapMemoryImpl(VAddr virtual_addr, size_t size);
+    s32 UnmapMemoryImpl(VAddr virtual_addr, size_t size);
 
 private:
     AddressSpace impl;

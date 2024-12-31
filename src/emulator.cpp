@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 shadPS4 Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <set>
 #include <fmt/core.h>
 
 #include "common/config.h"
@@ -44,10 +45,6 @@ Frontend::WindowSDL* g_window = nullptr;
 namespace Core {
 
 Emulator::Emulator() {
-    // Read configuration file.
-    const auto config_dir = Common::FS::GetUserPath(Common::FS::PathType::UserDir);
-    Config::load(config_dir / "config.toml");
-
     // Initialize NT API functions and set high priority
 #ifdef _WIN32
     Common::NtApi::Initialize();
@@ -100,15 +97,17 @@ Emulator::Emulator() {
 
 Emulator::~Emulator() {
     const auto config_dir = Common::FS::GetUserPath(Common::FS::PathType::UserDir);
-    Config::save(config_dir / "config.toml");
+    Config::saveMainWindow(config_dir / "config.toml");
 }
 
 void Emulator::Run(const std::filesystem::path& file) {
 
     // Use the eboot from the separated updates folder if it's there
-    std::filesystem::path game_patch_folder = file.parent_path().concat("-UPDATE");
-    bool use_game_patch = std::filesystem::exists(game_patch_folder / "sce_sys");
-    std::filesystem::path eboot_path = use_game_patch ? game_patch_folder / file.filename() : file;
+    std::filesystem::path game_patch_folder = file.parent_path();
+    game_patch_folder += "-UPDATE";
+    std::filesystem::path eboot_path = std::filesystem::exists(game_patch_folder / file.filename())
+                                           ? game_patch_folder / file.filename()
+                                           : file;
 
     // Applications expect to be run from /app0 so mount the file's parent path as app0.
     auto* mnt = Common::Singleton<Core::FileSys::MntPoints>::Instance();
@@ -226,18 +225,35 @@ void Emulator::Run(const std::filesystem::path& file) {
     LoadSystemModules(eboot_path, game_info.game_serial);
 
     // Load all prx from game's sce_module folder
-    std::filesystem::path sce_module_folder = file.parent_path() / "sce_module";
-    if (std::filesystem::is_directory(sce_module_folder)) {
-        for (const auto& entry : std::filesystem::directory_iterator(sce_module_folder)) {
-            std::filesystem::path module_path = entry.path();
-            std::filesystem::path update_module_path =
-                eboot_path.parent_path() / "sce_module" / entry.path().filename();
-            if (std::filesystem::exists(update_module_path) && use_game_patch) {
-                module_path = update_module_path;
+    std::vector<std::filesystem::path> modules_to_load;
+    std::filesystem::path game_module_folder = file.parent_path() / "sce_module";
+    if (std::filesystem::is_directory(game_module_folder)) {
+        for (const auto& entry : std::filesystem::directory_iterator(game_module_folder)) {
+            if (entry.is_regular_file()) {
+                modules_to_load.push_back(entry.path());
             }
-            LOG_INFO(Loader, "Loading {}", fmt::UTF(module_path.u8string()));
-            linker->LoadModule(module_path);
         }
+    }
+
+    // Load all prx from separate update's sce_module folder
+    std::filesystem::path update_module_folder = game_patch_folder / "sce_module";
+    if (std::filesystem::is_directory(update_module_folder)) {
+        for (const auto& entry : std::filesystem::directory_iterator(update_module_folder)) {
+            auto it = std::find_if(modules_to_load.begin(), modules_to_load.end(),
+                                   [&entry](const std::filesystem::path& p) {
+                                       return p.filename() == entry.path().filename();
+                                   });
+            if (it != modules_to_load.end()) {
+                *it = entry.path();
+            } else {
+                modules_to_load.push_back(entry.path());
+            }
+        }
+    }
+
+    for (const auto& module_path : modules_to_load) {
+        LOG_INFO(Loader, "Loading {}", fmt::UTF(module_path.u8string()));
+        linker->LoadModule(module_path);
     }
 
 #ifdef ENABLE_DISCORD_RPC
@@ -266,7 +282,7 @@ void Emulator::Run(const std::filesystem::path& file) {
 }
 
 void Emulator::LoadSystemModules(const std::filesystem::path& file, std::string game_serial) {
-    constexpr std::array<SysModules, 14> ModulesToLoad{
+    constexpr std::array<SysModules, 13> ModulesToLoad{
         {{"libSceNgs2.sprx", &Libraries::Ngs2::RegisterlibSceNgs2},
          {"libSceFiber.sprx", &Libraries::Fiber::RegisterlibSceFiber},
          {"libSceUlt.sprx", nullptr},
@@ -276,7 +292,10 @@ void Emulator::LoadSystemModules(const std::filesystem::path& file, std::string 
          {"libSceDiscMap.sprx", &Libraries::DiscMap::RegisterlibSceDiscMap},
          {"libSceRtc.sprx", &Libraries::Rtc::RegisterlibSceRtc},
          {"libSceJpegEnc.sprx", &Libraries::JpegEnc::RegisterlibSceJpegEnc},
-         {"libSceCesCs.sprx", nullptr}}};
+         {"libSceCesCs.sprx", nullptr},
+         {"libSceFont.sprx", nullptr},
+         {"libSceFontFt.sprx", nullptr},
+         {"libSceFreeTypeOt.sprx", nullptr}}};
 
     std::vector<std::filesystem::path> found_modules;
     const auto& sys_module_path = Common::FS::GetUserPath(Common::FS::PathType::SysModuleDir);
@@ -288,8 +307,9 @@ void Emulator::LoadSystemModules(const std::filesystem::path& file, std::string 
             found_modules, [&](const auto& path) { return path.filename() == module_name; });
         if (it != found_modules.end()) {
             LOG_INFO(Loader, "Loading {}", it->string());
-            linker->LoadModule(*it);
-            continue;
+            if (linker->LoadModule(*it) != -1) {
+                continue;
+            }
         }
         if (init_func) {
             LOG_INFO(Loader, "Can't Load {} switching to HLE", module_name);
@@ -298,7 +318,7 @@ void Emulator::LoadSystemModules(const std::filesystem::path& file, std::string 
             LOG_INFO(Loader, "No HLE available for {} module", module_name);
         }
     }
-    if (std::filesystem::exists(sys_module_path / game_serial)) {
+    if (!game_serial.empty() && std::filesystem::exists(sys_module_path / game_serial)) {
         for (const auto& entry :
              std::filesystem::directory_iterator(sys_module_path / game_serial)) {
             LOG_INFO(Loader, "Loading {} from game serial file {}", entry.path().string(),

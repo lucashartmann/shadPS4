@@ -1,21 +1,21 @@
 // SPDX-FileCopyrightText: Copyright 2024 shadPS4 Emulator Project
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <map>
+#include <ranges>
+
 #include "common/assert.h"
 #include "common/logging/log.h"
 #include "common/scope_exit.h"
 #include "common/singleton.h"
+#include "core/devices/logger.h"
+#include "core/devices/nop_device.h"
 #include "core/file_sys/fs.h"
 #include "core/libraries/kernel/file_system.h"
 #include "core/libraries/kernel/orbis_error.h"
 #include "core/libraries/libs.h"
+#include "core/memory.h"
 #include "kernel.h"
-
-#include <map>
-#include <ranges>
-
-#include "core/devices/logger.h"
-#include "core/devices/nop_device.h"
 
 namespace D = Core::Devices;
 using FactoryDevice = std::function<std::shared_ptr<D::BaseDevice>(u32, const char*, int, u16)>;
@@ -201,7 +201,7 @@ int PS4_SYSV_ABI posix_close(int d) {
     return result;
 }
 
-size_t PS4_SYSV_ABI sceKernelWrite(int d, const void* buf, size_t nbytes) {
+s64 PS4_SYSV_ABI sceKernelWrite(int d, const void* buf, size_t nbytes) {
     auto* h = Common::Singleton<Core::FileSys::HandleTable>::Instance();
     auto* file = h->GetFile(d);
     if (file == nullptr) {
@@ -246,6 +246,15 @@ int PS4_SYSV_ABI sceKernelUnlink(const char* path) {
     return ORBIS_OK;
 }
 
+size_t ReadFile(Common::FS::IOFile& file, void* buf, size_t nbytes) {
+    const auto* memory = Core::Memory::Instance();
+    // Invalidate up to the actual number of bytes that could be read.
+    const auto remaining = file.GetSize() - file.Tell();
+    memory->InvalidateMemory(reinterpret_cast<VAddr>(buf), std::min<u64>(nbytes, remaining));
+
+    return file.ReadRaw<u8>(buf, nbytes);
+}
+
 size_t PS4_SYSV_ABI _readv(int d, const SceKernelIovec* iov, int iovcnt) {
     auto* h = Common::Singleton<Core::FileSys::HandleTable>::Instance();
     auto* file = h->GetFile(d);
@@ -264,7 +273,7 @@ size_t PS4_SYSV_ABI _readv(int d, const SceKernelIovec* iov, int iovcnt) {
     }
     size_t total_read = 0;
     for (int i = 0; i < iovcnt; i++) {
-        total_read += file->f.ReadRaw<u8>(iov[i].iov_base, iov[i].iov_len);
+        total_read += ReadFile(file->f, iov[i].iov_base, iov[i].iov_len);
     }
     return total_read;
 }
@@ -351,7 +360,7 @@ s64 PS4_SYSV_ABI sceKernelRead(int d, void* buf, size_t nbytes) {
     if (file->type == Core::FileSys::FileType::Device) {
         return file->device->read(buf, nbytes);
     }
-    return file->f.ReadRaw<u8>(buf, nbytes);
+    return ReadFile(file->f, buf, nbytes);
 }
 
 int PS4_SYSV_ABI posix_read(int d, void* buf, size_t nbytes) {
@@ -541,7 +550,7 @@ s64 PS4_SYSV_ABI sceKernelPreadv(int d, SceKernelIovec* iov, int iovcnt, s64 off
     }
     size_t total_read = 0;
     for (int i = 0; i < iovcnt; i++) {
-        total_read += file->f.ReadRaw<u8>(iov[i].iov_base, iov[i].iov_len);
+        total_read += ReadFile(file->f, iov[i].iov_base, iov[i].iov_len);
     }
     return total_read;
 }
@@ -686,12 +695,66 @@ static int GetDents(int fd, char* buf, int nbytes, s64* basep) {
     return sizeof(OrbisKernelDirent);
 }
 
+static int HandleSeparateUpdateDents(int fd, char* buf, int nbytes, s64* basep) {
+    int dir_entries = 0;
+
+    auto* h = Common::Singleton<Core::FileSys::HandleTable>::Instance();
+    auto* mnt = Common::Singleton<Core::FileSys::MntPoints>::Instance();
+    auto* file = h->GetFile(fd);
+    auto update_dir_name = std::string{fmt::UTF(file->m_host_name.u8string()).data};
+    auto mount = mnt->GetMountFromHostPath(update_dir_name);
+    auto suffix = std::string{fmt::UTF(mount->host_path.u8string()).data};
+
+    size_t pos = update_dir_name.find("-UPDATE");
+    if (pos != std::string::npos) {
+        update_dir_name.erase(pos, 7);
+        auto guest_name = mount->mount + "/" + update_dir_name.substr(suffix.size() + 1);
+        int descriptor;
+
+        auto existent_folder = h->GetFile(update_dir_name);
+        if (!existent_folder) {
+            u32 handle = h->CreateHandle();
+            auto* new_file = h->GetFile(handle);
+            new_file->type = Core::FileSys::FileType::Directory;
+            new_file->m_guest_name = guest_name;
+            new_file->m_host_name = update_dir_name;
+            if (!std::filesystem::is_directory(new_file->m_host_name)) {
+                h->DeleteHandle(handle);
+                return dir_entries;
+            } else {
+                new_file->dirents = GetDirectoryEntries(new_file->m_host_name);
+                new_file->dirents_index = 0;
+            }
+            new_file->is_opened = true;
+            descriptor = h->GetFileDescriptor(new_file);
+        } else {
+            descriptor = h->GetFileDescriptor(existent_folder);
+        }
+
+        dir_entries = GetDents(descriptor, buf, nbytes, basep);
+        if (dir_entries == ORBIS_OK && existent_folder) {
+            existent_folder->dirents_index = 0;
+            file->dirents_index = 0;
+        }
+    }
+
+    return dir_entries;
+}
+
 int PS4_SYSV_ABI sceKernelGetdents(int fd, char* buf, int nbytes) {
-    return GetDents(fd, buf, nbytes, nullptr);
+    int a = GetDents(fd, buf, nbytes, nullptr);
+    if (a == ORBIS_OK) {
+        return HandleSeparateUpdateDents(fd, buf, nbytes, nullptr);
+    }
+    return a;
 }
 
 int PS4_SYSV_ABI sceKernelGetdirentries(int fd, char* buf, int nbytes, s64* basep) {
-    return GetDents(fd, buf, nbytes, basep);
+    int a = GetDents(fd, buf, nbytes, basep);
+    if (a == ORBIS_OK) {
+        return HandleSeparateUpdateDents(fd, buf, nbytes, basep);
+    }
+    return a;
 }
 
 s64 PS4_SYSV_ABI sceKernelPwrite(int d, void* buf, size_t nbytes, s64 offset) {

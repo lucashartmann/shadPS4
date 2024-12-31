@@ -11,6 +11,7 @@
 #include "common/types.h"
 #include "shader_recompiler/backend/bindings.h"
 #include "shader_recompiler/frontend/copy_shader.h"
+#include "shader_recompiler/frontend/tessellation.h"
 #include "shader_recompiler/ir/attribute.h"
 #include "shader_recompiler/ir/passes/srt.h"
 #include "shader_recompiler/ir/reg.h"
@@ -48,11 +49,11 @@ struct BufferResource {
     u8 instance_attrib{};
     bool is_written{};
 
-    bool IsStorage(AmdGpu::Buffer buffer) const noexcept {
+    [[nodiscard]] bool IsStorage(const AmdGpu::Buffer& buffer) const noexcept {
         return buffer.GetSize() > MaxUboSize || is_written || is_gds_buffer;
     }
 
-    constexpr AmdGpu::Buffer GetSharp(const Info& info) const noexcept;
+    [[nodiscard]] constexpr AmdGpu::Buffer GetSharp(const Info& info) const noexcept;
 };
 using BufferResourceList = boost::container::small_vector<BufferResource, 16>;
 
@@ -60,18 +61,24 @@ struct TextureBufferResource {
     u32 sharp_idx;
     bool is_written{};
 
-    constexpr AmdGpu::Buffer GetSharp(const Info& info) const noexcept;
+    [[nodiscard]] constexpr AmdGpu::Buffer GetSharp(const Info& info) const noexcept;
 };
 using TextureBufferResourceList = boost::container::small_vector<TextureBufferResource, 16>;
 
 struct ImageResource {
     u32 sharp_idx;
-    bool is_storage{};
     bool is_depth{};
     bool is_atomic{};
     bool is_array{};
+    bool is_read{};
+    bool is_written{};
 
-    constexpr AmdGpu::Image GetSharp(const Info& info) const noexcept;
+    [[nodiscard]] bool IsStorage(const AmdGpu::Image& image) const noexcept {
+        // Need cube as storage when used with ImageRead.
+        return is_written || (is_read && image.GetBoundType() == AmdGpu::ImageType::Cube);
+    }
+
+    [[nodiscard]] constexpr AmdGpu::Image GetSharp(const Info& info) const noexcept;
 };
 using ImageResourceList = boost::container::small_vector<ImageResource, 16>;
 
@@ -163,6 +170,7 @@ struct Info {
     UserDataMask ud_mask{};
 
     CopyShaderData gs_copy_data;
+    u32 uses_patches{};
 
     BufferResourceList buffers;
     TextureBufferResourceList texture_buffers;
@@ -173,8 +181,12 @@ struct Info {
     PersistentSrtInfo srt_info;
     std::vector<u32> flattened_ud_buf;
 
+    IR::ScalarReg tess_consts_ptr_base = IR::ScalarReg::Max;
+    s32 tess_consts_dword_offset = -1;
+
     std::span<const u32> user_data;
     Stage stage;
+    LogicalStage l_stage;
 
     u64 pgm_hash{};
     VAddr pgm_base;
@@ -190,14 +202,16 @@ struct Info {
     bool uses_shared{};
     bool uses_fp16{};
     bool uses_fp64{};
+    bool stores_tess_level_outer{};
+    bool stores_tess_level_inner{};
     bool translation_failed{}; // indicates that shader has unsupported instructions
     bool has_readconst{};
     u8 mrt_mask{0u};
     bool has_fetch_shader{false};
     u32 fetch_shader_sgpr_base{0u};
 
-    explicit Info(Stage stage_, ShaderParams params)
-        : stage{stage_}, pgm_hash{params.hash}, pgm_base{params.Base()},
+    explicit Info(Stage stage_, LogicalStage l_stage_, ShaderParams params)
+        : stage{stage_}, l_stage{l_stage_}, pgm_hash{params.hash}, pgm_base{params.Base()},
           user_data{params.user_data} {}
 
     template <typename T>
@@ -243,6 +257,16 @@ struct Info {
         if (srt_info.walker_func) {
             srt_info.walker_func(user_data.data(), flattened_ud_buf.data());
         }
+    }
+
+    void ReadTessConstantBuffer(TessellationDataConstantBuffer& tess_constants) const {
+        ASSERT(tess_consts_dword_offset >= 0); // We've already tracked the V# UD
+        auto buf = ReadUdReg<AmdGpu::Buffer>(static_cast<u32>(tess_consts_ptr_base),
+                                             static_cast<u32>(tess_consts_dword_offset));
+        VAddr tess_constants_addr = buf.base_address;
+        memcpy(&tess_constants,
+               reinterpret_cast<TessellationDataConstantBuffer*>(tess_constants_addr),
+               sizeof(tess_constants));
     }
 };
 

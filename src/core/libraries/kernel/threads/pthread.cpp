@@ -243,6 +243,12 @@ int PS4_SYSV_ABI posix_pthread_create_name_np(PthreadT* thread, const PthreadAtt
     static int TidCounter = 1;
     new_thread->tid = ++TidCounter;
 
+    if (new_thread->attr.stackaddr_attr == 0) {
+        /* Add additional stack space for HLE */
+        static constexpr size_t AdditionalStack = 128_KB;
+        new_thread->attr.stacksize_attr += AdditionalStack;
+    }
+
     if (thread_state->CreateStack(&new_thread->attr) != 0) {
         /* Insufficient memory to create a stack: */
         thread_state->Free(curthread, new_thread);
@@ -320,7 +326,8 @@ void PS4_SYSV_ABI sched_yield() {
     std::this_thread::yield();
 }
 
-int PS4_SYSV_ABI posix_pthread_once(PthreadOnce* once_control, void (*init_routine)()) {
+int PS4_SYSV_ABI posix_pthread_once(PthreadOnce* once_control,
+                                    void PS4_SYSV_ABI (*init_routine)()) {
     for (;;) {
         auto state = once_control->state.load();
         if (state == PthreadOnceState::Done) {
@@ -380,6 +387,7 @@ int PS4_SYSV_ABI posix_sched_get_priority_min() {
 
 int PS4_SYSV_ABI posix_pthread_rename_np(PthreadT thread, const char* name) {
     LOG_INFO(Kernel_Pthread, "name = {}", name);
+    Common::SetThreadName(reinterpret_cast<void*>(thread->native_thr.GetHandle()), name);
     thread->name = name;
     return ORBIS_OK;
 }
@@ -539,6 +547,8 @@ void RegisterThread(Core::Loader::SymbolsResolver* sym) {
     LIB_FUNCTION("onNY9Byn-W8", "libkernel", 1, "libkernel", 1, 1, ORBIS(posix_pthread_join));
     LIB_FUNCTION("P41kTWUS3EI", "libkernel", 1, "libkernel", 1, 1,
                  ORBIS(posix_pthread_getschedparam));
+    LIB_FUNCTION("oIRFTjoILbg", "libkernel", 1, "libkernel", 1, 1,
+                 ORBIS(posix_pthread_setschedparam));
     LIB_FUNCTION("How7B8Oet6k", "libkernel", 1, "libkernel", 1, 1, ORBIS(posix_pthread_getname_np));
     LIB_FUNCTION("3kg7rT0NQIs", "libkernel", 1, "libkernel", 1, 1, posix_pthread_exit);
     LIB_FUNCTION("aI+OeCz8xrQ", "libkernel", 1, "libkernel", 1, 1, posix_pthread_self);

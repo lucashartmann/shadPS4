@@ -154,7 +154,7 @@ void Presenter::CreatePostProcessPipeline() {
     const auto& fs_module =
         Vulkan::Compile(pp_shaders[1], vk::ShaderStageFlagBits::eFragment, instance.GetDevice());
     ASSERT(fs_module);
-    Vulkan::SetObjectName(instance.GetDevice(), vs_module, "post_process.frag");
+    Vulkan::SetObjectName(instance.GetDevice(), fs_module, "post_process.frag");
 
     const std::array shaders_ci{
         vk::PipelineShaderStageCreateInfo{
@@ -628,15 +628,35 @@ Frame* Presenter::PrepareFrameInternal(VideoCore::ImageId image_id, bool is_eop)
 }
 
 void Presenter::Present(Frame* frame) {
+    // Free the frame for reuse
+    const auto free_frame = [&] {
+        std::scoped_lock fl{free_mutex};
+        free_queue.push(frame);
+        free_cv.notify_one();
+    };
+
     // Recreate the swapchain if the window was resized.
     if (window.GetWidth() != swapchain.GetExtent().width ||
         window.GetHeight() != swapchain.GetExtent().height) {
         swapchain.Recreate(window.GetWidth(), window.GetHeight());
     }
 
-    ImGui::Core::NewFrame();
+    if (!swapchain.AcquireNextImage()) {
+        swapchain.Recreate(window.GetWidth(), window.GetHeight());
+        if (!swapchain.AcquireNextImage()) {
+            // User resizes the window too fast and GPU can't keep up. Skip this frame.
+            LOG_WARNING(Render_Vulkan, "Skipping frame!");
+            free_frame();
+            return;
+        }
+    }
 
-    swapchain.AcquireNextImage();
+    // Reset fence for queue submission. Do it here instead of GetRenderFrame() because we may
+    // skip frame because of slow swapchain recreation. If a frame skip occurs, we skip signal
+    // the frame's present fence and future GetRenderFrame() call will hang waiting for this frame.
+    instance.GetDevice().resetFences(frame->present_done);
+
+    ImGui::Core::NewFrame();
 
     const vk::Image swapchain_image = swapchain.Image();
 
@@ -731,13 +751,11 @@ void Presenter::Present(Frame* frame) {
 
     // Present to swapchain.
     std::scoped_lock submit_lock{Scheduler::submit_mutex};
-    swapchain.Present();
+    if (!swapchain.Present()) {
+        swapchain.Recreate(window.GetWidth(), window.GetHeight());
+    }
 
-    // Free the frame for reuse
-    std::scoped_lock fl{free_mutex};
-    free_queue.push(frame);
-    free_cv.notify_one();
-
+    free_frame();
     DebugState.IncFlipFrameNum();
 }
 
@@ -771,9 +789,6 @@ Frame* Presenter::GetRenderFrame() {
             continue;
         }
     }
-
-    // Reset fence for next queue submission.
-    device.resetFences(frame->present_done);
 
     // If the window dimensions changed, recreate this frame
     if (frame->width != window.GetWidth() || frame->height != window.GetHeight()) {
