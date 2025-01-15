@@ -71,6 +71,7 @@ private:
     RenderState PrepareRenderState(u32 mrt_mask);
     void BeginRendering(const GraphicsPipeline& pipeline, RenderState& state);
     void Resolve();
+    void DepthStencilCopy(bool is_depth, bool is_stencil);
     void EliminateFastClear();
 
     void UpdateDynamicState(const GraphicsPipeline& pipeline);
@@ -121,7 +122,7 @@ private:
     using TexBufferBindingInfo = std::pair<VideoCore::BufferId, AmdGpu::Buffer>;
     boost::container::static_vector<TexBufferBindingInfo, 32> texbuffer_bindings;
     using ImageBindingInfo = std::pair<VideoCore::ImageId, VideoCore::TextureCache::TextureDesc>;
-    boost::container::static_vector<ImageBindingInfo, 32> image_bindings;
+    boost::container::static_vector<ImageBindingInfo, 64> image_bindings;
 };
 
 } // namespace Vulkan

@@ -15,8 +15,13 @@ void load(const std::filesystem::path& path);
 void save(const std::filesystem::path& path);
 void saveMainWindow(const std::filesystem::path& path);
 
-bool isNeoMode();
-bool isFullscreenMode();
+std::string getTrophyKey();
+void setTrophyKey(std::string key);
+bool GetLoadGameSizeEnabled();
+void setLoadGameSizeEnabled(bool enable);
+bool getIsFullscreen();
+std::string getFullscreenMode();
+bool isNeoModeConsole();
 bool getPlayBGM();
 int getBGMvolume();
 bool getisTrophyPopupDisabled();
@@ -24,7 +29,6 @@ bool getEnableDiscordRPC();
 bool getSeparateUpdateEnabled();
 bool getCompatibilityEnabled();
 bool getCheckCompatibilityOnStartup();
-std::string getAudioBackend();
 
 std::string getLogFilter();
 std::string getLogType();
@@ -36,6 +40,7 @@ int getCursorHideTimeout();
 std::string getBackButtonBehavior();
 bool getUseSpecialPad();
 int getSpecialPadClass();
+bool getIsMotionControlsEnabled();
 
 u32 getScreenWidth();
 u32 getScreenHeight();
@@ -63,7 +68,8 @@ void setVblankDiv(u32 value);
 void setGpuId(s32 selectedGpuId);
 void setScreenWidth(u32 width);
 void setScreenHeight(u32 height);
-void setFullscreenMode(bool enable);
+void setIsFullscreen(bool enable);
+void setFullscreenMode(std::string mode);
 void setisTrophyPopupDisabled(bool disable);
 void setPlayBGM(bool enable);
 void setBGMvolume(int volume);
@@ -76,13 +82,13 @@ void setSeparateUpdateEnabled(bool use);
 void setGameInstallDirs(const std::vector<std::filesystem::path>& settings_install_dirs_config);
 void setCompatibilityEnabled(bool use);
 void setCheckCompatibilityOnStartup(bool use);
-void setAudioBackend(std::string backend);
 
 void setCursorState(s16 cursorState);
 void setCursorHideTimeout(int newcursorHideTimeout);
 void setBackButtonBehavior(const std::string& type);
 void setUseSpecialPad(bool use);
 void setSpecialPadClass(int type);
+void setIsMotionControlsEnabled(bool use);
 
 void setLogType(const std::string& type);
 void setLogFilter(const std::string& type);

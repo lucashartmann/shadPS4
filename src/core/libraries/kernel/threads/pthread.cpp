@@ -244,10 +244,9 @@ int PS4_SYSV_ABI posix_pthread_create_name_np(PthreadT* thread, const PthreadAtt
     new_thread->tid = ++TidCounter;
 
     if (new_thread->attr.stackaddr_attr == 0) {
-        /* Enforce minimum stack size of 128 KB */
-        static constexpr size_t MinimumStack = 128_KB;
-        auto& stacksize = new_thread->attr.stacksize_attr;
-        stacksize = std::max(stacksize, MinimumStack);
+        /* Add additional stack space for HLE */
+        static constexpr size_t AdditionalStack = 128_KB;
+        new_thread->attr.stacksize_attr += AdditionalStack;
     }
 
     if (thread_state->CreateStack(&new_thread->attr) != 0) {
@@ -387,6 +386,9 @@ int PS4_SYSV_ABI posix_sched_get_priority_min() {
 }
 
 int PS4_SYSV_ABI posix_pthread_rename_np(PthreadT thread, const char* name) {
+    if (thread == nullptr) {
+        return POSIX_EINVAL;
+    }
     LOG_INFO(Kernel_Pthread, "name = {}", name);
     Common::SetThreadName(reinterpret_cast<void*>(thread->native_thr.GetHandle()), name);
     thread->name = name;
