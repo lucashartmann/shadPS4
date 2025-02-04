@@ -106,21 +106,38 @@ git_describe(GIT_DESC --always --long --dirty)
 git_branch_name(GIT_BRANCH)
 string(TIMESTAMP BUILD_DATE "%Y-%m-%d %H:%M:%S")
 
-# Get current remote name and branch
+# Try to get the upstream remote and branch
 execute_process(
   COMMAND git rev-parse --abbrev-ref --symbolic-full-name @{u}
   OUTPUT_VARIABLE GIT_REMOTE_NAME
   RESULT_VARIABLE GIT_BRANCH_RESULT
+  ERROR_QUIET
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-# Default to origin if branch is not set
+# If there's no upstream set or the command failed, check remote.pushDefault
 if (GIT_BRANCH_RESULT OR GIT_REMOTE_NAME STREQUAL "")
-  set(GIT_REMOTE_NAME "origin")
+  execute_process(
+    COMMAND git config --get remote.pushDefault
+    OUTPUT_VARIABLE GIT_REMOTE_NAME
+    RESULT_VARIABLE GIT_PUSH_DEFAULT_RESULT
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  
+  # If remote.pushDefault is not set or fails, default to origin
+  if (GIT_PUSH_DEFAULT_RESULT OR GIT_REMOTE_NAME STREQUAL "")
+    set(GIT_REMOTE_NAME "origin")
+  endif()
 else()
-  # Extract remote name from full name
+  # Extract remote name if the output contains a remote/branch format
   string(FIND "${GIT_REMOTE_NAME}" "/" INDEX)
-  string(SUBSTRING "${GIT_REMOTE_NAME}" 0 "${INDEX}" GIT_REMOTE_NAME)
+  if (INDEX GREATER -1)
+    string(SUBSTRING "${GIT_REMOTE_NAME}" 0 "${INDEX}" GIT_REMOTE_NAME)
+  else()
+    # If no remote is present (only a branch name), default to origin
+    set(GIT_REMOTE_NAME "origin")
+  endif()
 endif()
 
 # Get remote link
@@ -848,6 +865,10 @@ set(IMGUI src/imgui/imgui_config.h
 
 set(INPUT src/input/controller.cpp
           src/input/controller.h
+          src/input/input_handler.cpp
+          src/input/input_handler.h
+          src/input/input_mouse.cpp
+          src/input/input_mouse.h
 )
 
 set(EMULATOR src/emulator.cpp
@@ -897,6 +918,10 @@ set(QT_GUI src/qt_gui/about_dialog.cpp
            src/qt_gui/trophy_viewer.h
            src/qt_gui/elf_viewer.cpp
            src/qt_gui/elf_viewer.h
+           src/qt_gui/kbm_config_dialog.cpp
+           src/qt_gui/kbm_config_dialog.h
+           src/qt_gui/kbm_help_dialog.cpp
+           src/qt_gui/kbm_help_dialog.h
            src/qt_gui/main_window_themes.cpp
            src/qt_gui/main_window_themes.h
            src/qt_gui/settings_dialog.cpp
