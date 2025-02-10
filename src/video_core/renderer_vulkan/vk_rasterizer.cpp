@@ -435,28 +435,6 @@ bool Rasterizer::BindResources(const Pipeline* pipeline) {
     if (pipeline->IsCompute()) {
         const auto& info = pipeline->GetStage(Shader::LogicalStage::Compute);
 
-        // Most of the time when a metadata is updated with a shader it gets cleared. It means
-        // we can skip the whole dispatch and update the tracked state instead. Also, it is not
-        // intended to be consumed and in such rare cases (e.g. HTile introspection, CRAA) we
-        // will need its full emulation anyways. For cases of metadata read a warning will be
-        // logged.
-        const auto IsMetaUpdate = [&](const auto& desc) {
-            const auto sharp = desc.GetSharp(info);
-            const VAddr address = sharp.base_address;
-            if (desc.is_written) {
-                // Assume all slices were updates
-                if (texture_cache.ClearMeta(address)) {
-                    LOG_TRACE(Render_Vulkan, "Metadata update skipped");
-                    return true;
-                }
-            } else {
-                if (texture_cache.IsMeta(address)) {
-                    LOG_WARNING(Render_Vulkan, "Unexpected metadata read by a CS shader (buffer)");
-                }
-            }
-            return false;
-        };
-
         // Assume if a shader reads and writes metas at the same time, it is a copy shader.
         bool meta_read = false;
         for (const auto& desc : info.buffers) {
@@ -469,10 +447,26 @@ bool Rasterizer::BindResources(const Pipeline* pipeline) {
             }
         }
 
+        // Most of the time when a metadata is updated with a shader it gets cleared. It means
+        // we can skip the whole dispatch and update the tracked state instead. Also, it is not
+        // intended to be consumed and in such rare cases (e.g. HTile introspection, CRAA) we
+        // will need its full emulation anyways. For cases of metadata read a warning will be
+        // logged.
         if (!meta_read) {
             for (const auto& desc : info.buffers) {
-                if (IsMetaUpdate(desc)) {
-                    return false;
+                const auto sharp = desc.GetSharp(info);
+                const VAddr address = sharp.base_address;
+                if (desc.is_written) {
+                    // Assume all slices were updates
+                    if (texture_cache.ClearMeta(address)) {
+                        LOG_TRACE(Render_Vulkan, "Metadata update skipped");
+                        return false;
+                    }
+                } else {
+                    if (texture_cache.IsMeta(address)) {
+                        LOG_WARNING(Render_Vulkan,
+                                    "Unexpected metadata read by a CS shader (buffer)");
+                    }
                 }
             }
         }
@@ -560,11 +554,10 @@ void Rasterizer::BindBuffers(const Shader::Info& stage, Shader::Backend::Binding
     }
 
     // Second pass to re-bind buffers that were updated after binding
-    auto& null_buffer = buffer_cache.GetBuffer(VideoCore::NULL_BUFFER_ID);
     for (u32 i = 0; i < buffer_bindings.size(); i++) {
         const auto& [buffer_id, vsharp] = buffer_bindings[i];
         const auto& desc = stage.buffers[i];
-        const bool is_storage = desc.IsStorage(vsharp);
+        const bool is_storage = desc.IsStorage(vsharp, pipeline_cache.GetProfile());
         if (!buffer_id) {
             if (desc.is_gds_buffer) {
                 const auto* gds_buf = buffer_cache.GetGdsBuffer();
@@ -572,6 +565,7 @@ void Rasterizer::BindBuffers(const Shader::Info& stage, Shader::Backend::Binding
             } else if (instance.IsNullDescriptorSupported()) {
                 buffer_infos.emplace_back(VK_NULL_HANDLE, 0, VK_WHOLE_SIZE);
             } else {
+                auto& null_buffer = buffer_cache.GetBuffer(VideoCore::NULL_BUFFER_ID);
                 buffer_infos.emplace_back(null_buffer.Handle(), 0, VK_WHOLE_SIZE);
             }
         } else {
@@ -990,14 +984,8 @@ void Rasterizer::UpdateDynamicState(const GraphicsPipeline& pipeline) {
     const auto cmdbuf = scheduler.CommandBuffer();
     cmdbuf.setBlendConstants(&regs.blend_constants.red);
 
-    if (instance.IsColorWriteEnableSupported()) {
-        const auto& write_masks = pipeline.GetWriteMasks();
-        std::array<vk::Bool32, Liverpool::NumColorBuffers> write_ens{};
-        std::transform(write_masks.cbegin(), write_masks.cend(), write_ens.begin(),
-                       [](auto in) { return in ? vk::True : vk::False; });
-
-        cmdbuf.setColorWriteEnableEXT(write_ens);
-        cmdbuf.setColorWriteMaskEXT(0, write_masks);
+    if (instance.IsDynamicColorWriteMaskSupported()) {
+        cmdbuf.setColorWriteMaskEXT(0, pipeline.GetWriteMasks());
     }
     if (regs.depth_control.depth_bounds_enable) {
         cmdbuf.setDepthBounds(regs.depth_bounds_min, regs.depth_bounds_max);
