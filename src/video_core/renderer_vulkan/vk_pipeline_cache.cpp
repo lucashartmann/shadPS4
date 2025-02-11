@@ -218,6 +218,15 @@ PipelineCache::PipelineCache(const Instance& instance_, Scheduler& scheduler_,
     pipeline_cache = std::move(cache);
 }
 
+bool ShouldSkipShader(u64 shader_hash, const char* shader_type) {
+    static std::vector<u64> skip_hashes = {0xbddb8fc7, 0x9a987165, 0xbfed1ef4, 0xfefebf9f};
+    if (std::ranges::contains(skip_hashes, shader_hash)) {
+        LOG_WARNING(Render_Vulkan, "Skipped {} shader hash {:#x}.", shader_type, shader_hash);
+        return true;
+    }
+    return false;
+}
+
 PipelineCache::~PipelineCache() = default;
 
 const GraphicsPipeline* PipelineCache::GetGraphicsPipeline() {
@@ -352,6 +361,7 @@ bool PipelineCache::RefreshGraphicsKey() {
             .export_format = regs.color_export_format.GetFormat(cb),
             .needs_unorm_fixup = needs_unorm_fixup,
         };
+
     }
 
     fetch_shader = std::nullopt;
@@ -378,6 +388,10 @@ bool PipelineCache::RefreshGraphicsKey() {
             LOG_WARNING(Render_Vulkan, "Invalid binary info structure!");
             key.stage_hashes[stage_out_idx] = 0;
             infos[stage_out_idx] = nullptr;
+            return false;
+        }
+
+        if (ShouldSkipShader(bininfo.shader_hash, "graphics")) {
             return false;
         }
 
@@ -489,6 +503,9 @@ bool PipelineCache::RefreshComputeKey() {
     Shader::Backend::Bindings binding{};
     const auto& cs_pgm = liverpool->GetCsRegs();
     const auto cs_params = Liverpool::GetParams(cs_pgm);
+    if (ShouldSkipShader(cs_params.hash, "compute")) {
+        return false;
+    }
     std::tie(infos[0], modules[0], fetch_shader, compute_key.value) =
         GetProgram(Shader::Stage::Compute, LogicalStage::Compute, cs_params, binding);
     return true;
