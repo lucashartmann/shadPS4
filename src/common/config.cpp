@@ -55,6 +55,7 @@ static bool isDebugDump = false;
 static bool isShaderDebug = false;
 static bool isShowSplash = false;
 static bool isAutoUpdate = false;
+static bool isAlwaysShowChangelog = false;
 static bool isNullGpu = false;
 static bool shouldCopyGPUBuffers = false;
 static bool shouldDumpShaders = false;
@@ -95,7 +96,7 @@ u32 m_window_size_H = 720;
 std::vector<std::string> m_pkg_viewer;
 std::vector<std::string> m_elf_viewer;
 std::vector<std::string> m_recent_files;
-std::string emulator_language = "en";
+std::string emulator_language = "en_US";
 static int backgroundImageOpacity = 50;
 static bool showBackgroundImage = true;
 
@@ -237,6 +238,10 @@ bool autoUpdate() {
     return isAutoUpdate;
 }
 
+bool alwaysShowChangelog() {
+    return isAlwaysShowChangelog;
+}
+
 bool nullGpu() {
     return isNullGpu;
 }
@@ -335,6 +340,10 @@ void setShowSplash(bool enable) {
 
 void setAutoUpdate(bool enable) {
     isAutoUpdate = enable;
+}
+
+void setAlwaysShowChangelog(bool enable) {
+    isAlwaysShowChangelog = enable;
 }
 
 void setNullGpu(bool enable) {
@@ -678,6 +687,7 @@ void load(const std::filesystem::path& path) {
         }
         isShowSplash = toml::find_or<bool>(general, "showSplash", true);
         isAutoUpdate = toml::find_or<bool>(general, "autoUpdate", false);
+        isAlwaysShowChangelog = toml::find_or<bool>(general, "alwaysShowChangelog", false);
         separateupdatefolder = toml::find_or<bool>(general, "separateUpdateEnabled", false);
         compatibilityData = toml::find_or<bool>(general, "compatibilityEnabled", false);
         checkCompatibilityOnStartup =
@@ -758,7 +768,21 @@ void load(const std::filesystem::path& path) {
         m_elf_viewer = toml::find_or<std::vector<std::string>>(gui, "elfDirs", {});
         m_recent_files = toml::find_or<std::vector<std::string>>(gui, "recentFiles", {});
         m_table_mode = toml::find_or<int>(gui, "gameTableMode", 0);
-        emulator_language = toml::find_or<std::string>(gui, "emulatorLanguage", "en");
+
+        emulator_language = toml::find_or<std::string>(gui, "emulatorLanguage", "en_US");
+
+        // Check if the loaded language is in the allowed list
+        const std::vector<std::string> allowed_languages = {
+            "ar_SA", "da_DK", "de_DE", "el_GR", "en_US", "es_ES", "fa_IR",
+            "fi_FI", "fr_FR", "hu_HU", "id_ID", "it_IT", "ja_JP", "ko_KR",
+            "lt_LT", "nl_NL", "no_NO", "pl_PL", "pt_BR", "ro_RO", "ru_RU",
+            "sq_AL", "sv_SE", "tr_TR", "uk_UA", "vi_VN", "zh_CN", "zh_TW"};
+
+        if (std::find(allowed_languages.begin(), allowed_languages.end(), emulator_language) ==
+            allowed_languages.end()) {
+            emulator_language = "en_US"; // Default to en_US if not in the list
+            save(path);
+        }
         backgroundImageOpacity = toml::find_or<int>(gui, "backgroundImageOpacity", 50);
         showBackgroundImage = toml::find_or<bool>(gui, "showBackgroundImage", true);
     }
@@ -811,6 +835,7 @@ void save(const std::filesystem::path& path) {
     data["General"]["chooseHomeTab"] = chooseHomeTab;
     data["General"]["showSplash"] = isShowSplash;
     data["General"]["autoUpdate"] = isAutoUpdate;
+    data["General"]["alwaysShowChangelog"] = isAlwaysShowChangelog;
     data["General"]["separateUpdateEnabled"] = separateupdatefolder;
     data["General"]["compatibilityEnabled"] = compatibilityData;
     data["General"]["checkCompatibilityOnStartup"] = checkCompatibilityOnStartup;
@@ -932,6 +957,7 @@ void setDefaultValues() {
     isShaderDebug = false;
     isShowSplash = false;
     isAutoUpdate = false;
+    isAlwaysShowChangelog = false;
     isNullGpu = false;
     shouldDumpShaders = false;
     vblankDivider = 1;
@@ -942,7 +968,7 @@ void setDefaultValues() {
     vkHostMarkers = false;
     vkGuestMarkers = false;
     rdocEnable = false;
-    emulator_language = "en";
+    emulator_language = "en_US";
     m_language = 1;
     gpuId = -1;
     separateupdatefolder = false;
