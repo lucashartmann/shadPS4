@@ -361,7 +361,6 @@ bool PipelineCache::RefreshGraphicsKey() {
             .export_format = regs.color_export_format.GetFormat(cb),
             .needs_unorm_fixup = needs_unorm_fixup,
         };
-
     }
 
     fetch_shader = std::nullopt;
