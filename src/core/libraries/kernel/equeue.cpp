@@ -204,43 +204,84 @@ int PS4_SYSV_ABI sceKernelWaitEqueue(SceKernelEqueue eq, SceKernelEvent* ev, int
     TRACE_HINT(eq->GetName());
     LOG_TRACE(Kernel_Event, "equeue = {} num = {}", eq->GetName(), num);
 
-    if (eq == nullptr) {
+    if (eq == nullptr)
         return ORBIS_KERNEL_ERROR_EBADF;
-    }
-
-    if (ev == nullptr) {
+    if (ev == nullptr)
         return ORBIS_KERNEL_ERROR_EFAULT;
-    }
-
-    if (num < 1) {
+    if (num < 1)
         return ORBIS_KERNEL_ERROR_EINVAL;
-    }
+
+    int result = ORBIS_OK;
+    auto start_time = std::chrono::steady_clock::now();
+    std::chrono::microseconds remaining_time{0};
 
     if (eq->HasSmallTimer()) {
-        ASSERT(timo && *timo);
-        *out = eq->WaitForSmallTimer(ev, num, *timo);
-    } else {
-        if (timo == nullptr) { // wait until an event arrives without timing out
-            *out = eq->WaitForEvents(ev, num, 0);
+        LOG_DEBUG(Kernel_Event, "Small timer ativo. Validando timeout...");
+        if (timo == nullptr || *timo == 0) {
+            LOG_ERROR(Kernel_Event, "Small timer requer timeout válido! timo={}", fmt::ptr(timo));
+            *out = 0;
+            return ORBIS_KERNEL_ERROR_EINVAL;
         }
-
-        if (timo != nullptr) {
-            // Only events that have already arrived at the time of this function call can be
-            // received
-            if (*timo == 0) {
+        do {
+            auto current_time = std::chrono::steady_clock::now();
+            auto elapsed = current_time - start_time;
+            if (elapsed >= remaining_time) {
+                *out = 0;
+                return ORBIS_KERNEL_ERROR_ETIMEDOUT;
+            }
+            *out = eq->WaitForSmallTimer(
+                ev, num,
+                std::chrono::duration_cast<std::chrono::microseconds>(remaining_time - elapsed)
+                    .count());
+            if (*out > 0) {
+                break;
+            }
+        } while (true);
+    } else {
+        if (timo == nullptr) {
+            LOG_DEBUG(Kernel_Event, "Espera indefinida sem timeout");
+            *out = eq->WaitForEvents(ev, num, 0);
+            if (*out == 0) {
+                LOG_WARNING(Kernel_Event, "WaitForEvents retornou 0 em modo bloqueante!");
+                return ORBIS_KERNEL_ERROR_ECANCELED;
+            }
+            return ORBIS_OK;
+        } else {
+            remaining_time = std::chrono::microseconds(*timo);
+            bool timed_out = false;
+            do {
                 *out = eq->GetTriggeredEvents(ev, num);
-            } else {
-                // Wait until an event arrives with timing out
-                *out = eq->WaitForEvents(ev, num, *timo);
+                if (*out > 0) {
+                    break;
+                }
+                auto current_time = std::chrono::steady_clock::now();
+                auto elapsed = current_time - start_time;
+                if (elapsed >= remaining_time) {
+                    timed_out = true;
+                    break;
+                }
+                auto wait_time =
+                    std::chrono::duration_cast<std::chrono::microseconds>(remaining_time - elapsed);
+                *out = eq->WaitForEvents(ev, num, wait_time.count());
+                if (*out > 0)
+                    break;
+            } while (true);
+            if (timed_out) {
+                *out = 0;
+                result = ORBIS_KERNEL_ERROR_ETIMEDOUT;
             }
         }
     }
 
-    if (*out == 0) {
-        return ORBIS_KERNEL_ERROR_ETIMEDOUT;
+    if (result == ORBIS_OK && *out > 0) {
+        for (int i = 0; i < *out; i++) {
+            if (ev[i].flags & SceKernelEvent::Flags::OneShot) {
+                eq->RemoveEvent(ev[i].ident, ev[i].filter);
+            }
+        }
     }
 
-    return ORBIS_OK;
+    return result;
 }
 
 s32 PS4_SYSV_ABI sceKernelAddHRTimerEvent(SceKernelEqueue eq, int id, timespec* ts, void* udata) {
