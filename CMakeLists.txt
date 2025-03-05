@@ -298,6 +298,7 @@ set(KERNEL_LIB src/core/libraries/kernel/sync/mutex.cpp
 
 set(NETWORK_LIBS src/core/libraries/network/http.cpp
                  src/core/libraries/network/http.h
+                 src/core/libraries/network/http_error.h
                  src/core/libraries/network/http2.cpp
                  src/core/libraries/network/http2.h
                  src/core/libraries/network/net.cpp
@@ -916,6 +917,9 @@ set(QT_GUI src/qt_gui/about_dialog.cpp
 	   src/qt_gui/control_settings.cpp	   
            src/qt_gui/control_settings.h
            src/qt_gui/control_settings.ui
+           src/qt_gui/kbm_gui.cpp	   
+           src/qt_gui/kbm_gui.h
+           src/qt_gui/kbm_gui.ui
            src/qt_gui/main_window_ui.h
            src/qt_gui/main_window.cpp
            src/qt_gui/main_window.h

@@ -419,11 +419,11 @@
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Left</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Right</translation>
     </message>
     <message>
         <source>Down</source>
@@ -776,6 +776,10 @@
         <translation>Delete DLC</translation>
     </message>
     <message>
+        <source>Delete Trophy</source>
+        <translation>Delete Trophy</translation>
+    </message>
+    <message>
         <source>Compatibility...</source>
         <translation>Compatibility...</translation>
     </message>
@@ -852,6 +856,10 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>No log file found for this game!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Failed to convert icon.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -860,8 +868,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>This game has no saved trophies to delete!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Save Data</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trophy</source>
+        <translation type="unfinished">Trophy</translation>
     </message>
     <message>
         <source>SFO Viewer for </source>
@@ -884,6 +900,165 @@
     </message>
     <message>
         <source>Delete PKG File on Install</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>KBMSettings</name>
+    <message>
+        <source>Configure Controls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Pad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unmapped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Left</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Right</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left Analog Halfmode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>hold to move left stick at half-speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left Stick</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Config Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Common Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use per-game configs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Help</translation>
+    </message>
+    <message>
+        <source>R1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Touchpad Click</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mouse to Joystick</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*press F7 ingame to activate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mouse Movement Parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>note: click Help Button/Special Keybindings for more information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Face Buttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Square</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right Analog Halfmode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>hold to move right stick at half-speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right Stick</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed Offset (def 0.125):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy from Common Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deadzone Offset (def 0.50):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed Multiplier (def 1.0):</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1312,6 +1487,10 @@
         <translation>Trophy</translation>
     </message>
     <message>
+        <source>Open the custom trophy images/sounds folder</source>
+        <translation>Open the custom trophy images/sounds folder</translation>
+    </message>
+    <message>
         <source>Logger</source>
         <translation>Logger</translation>
     </message>
@@ -1476,8 +1655,8 @@
         <translation>Title Music</translation>
     </message>
     <message>
-        <source>Disable Trophy Pop-ups</source>
-        <translation>Disable Trophy Pop-ups</translation>
+        <source>Disable Trophy Notification</source>
+        <translation>Disable Trophy Notification</translation>
     </message>
     <message>
         <source>Background Image</source>
@@ -1610,6 +1789,10 @@
     <message>
         <source>Update Compatibility Database:\nImmediately update the compatibility database.</source>
         <translation>Update Compatibility Database:\nImmediately update the compatibility database.</translation>
+    </message>
+    <message>
+        <source>Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</source>
+        <translation>Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</translation>
     </message>
     <message>
         <source>Never</source>
@@ -1803,12 +1986,64 @@
         <source>Separate Log Files:\nWrites a separate logfile for each game.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Trophy Notification Position</source>
+        <translation>Trophy Notification Position</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Left</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Right</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation>Top</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation>Bottom</translation>
+    </message>
+    <message>
+        <source>Notification Duration</source>
+        <translation>Notification Duration</translation>
+    </message>
+    <message>
+        <source>Portable User Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Portable User Folder from Common User Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TrophyViewer</name>
     <message>
         <source>Trophy Viewer</source>
         <translation>Trophy Viewer</translation>
+    </message>
+    <message>
+        <source>Progress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Earned Trophies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Not Earned Trophies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Hidden Trophies</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

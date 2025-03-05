@@ -776,6 +776,10 @@
       <translation>Fshi DLC-në</translation>
     </message>
     <message>
+      <source>Delete Trophy</source>
+      <translation>Fshi Trofeun</translation>
+    </message>
+    <message>
       <source>Compatibility...</source>
       <translation>Përputhshmëria...</translation>
     </message>
@@ -852,6 +856,10 @@
       <translation>Kjo lojë nuk ka dosje përditësimi për të hapur!</translation>
     </message>
     <message>
+      <source>No log file found for this game!</source>
+      <translation>Nuk u gjet asnjë skedar ditari për këtë lojë!</translation>
+    </message>
+    <message>
       <source>Failed to convert icon.</source>
       <translation>Konvertimi i ikonës dështoi.</translation>
     </message>
@@ -860,8 +868,16 @@
       <translation>Kjo lojë nuk ka të dhëna ruajtje për të fshirë!</translation>
     </message>
     <message>
+      <source>This game has no saved trophies to delete!</source>
+      <translation>Kjo lojë nuk ka trofe të ruajtur për të fshirë!</translation>
+    </message>
+    <message>
       <source>Save Data</source>
       <translation>Të dhënat e ruajtjes</translation>
+    </message>
+    <message>
+      <source>Trophy</source>
+      <translation>Trofeu</translation>
     </message>
     <message>
       <source>SFO Viewer for </source>
@@ -885,6 +901,169 @@
     <message>
       <source>Delete PKG File on Install</source>
       <translation>Fshi skedarin PKG pas instalimit</translation>
+    </message>
+  </context>
+  <context>
+    <name>KBMSettings</name>
+    <message>
+      <source>Configure Controls</source>
+      <translation type="unfinished">Configure Controls</translation>
+    </message>
+    <message>
+      <source>D-Pad</source>
+      <translation type="unfinished">D-Pad</translation>
+    </message>
+    <message>
+      <source>Up</source>
+      <translation type="unfinished">Up</translation>
+    </message>
+    <message>
+      <source>unmapped</source>
+      <translation type="unfinished">unmapped</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation type="unfinished">Left</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation type="unfinished">Right</translation>
+    </message>
+    <message>
+      <source>Down</source>
+      <translation type="unfinished">Down</translation>
+    </message>
+    <message>
+      <source>Left Analog Halfmode</source>
+      <translation type="unfinished">Left Analog Halfmode</translation>
+    </message>
+    <message>
+      <source>hold to move left stick at half-speed</source>
+      <translation type="unfinished">hold to move left stick at half-speed</translation>
+    </message>
+    <message>
+      <source>Left Stick</source>
+      <translation type="unfinished">Left Stick</translation>
+    </message>
+    <message>
+      <source>Config Selection</source>
+      <translation type="unfinished">Config Selection</translation>
+    </message>
+    <message>
+      <source>Common Config</source>
+      <translation type="unfinished">Common Config</translation>
+    </message>
+    <message>
+      <source>Use per-game configs</source>
+      <translation type="unfinished">Use per-game configs</translation>
+    </message>
+    <message>
+      <source>Copy  from Common Config</source>
+      <translation type="unfinished">Copy  from Common Config</translation>
+    </message>
+    <message>
+      <source>L1</source>
+      <translation type="unfinished">L1</translation>
+    </message>
+    <message>
+      <source>L2</source>
+      <translation type="unfinished">L2</translation>
+    </message>
+    <message>
+      <source>Text Editor</source>
+      <translation type="unfinished">Text Editor</translation>
+    </message>
+    <message>
+      <source>Help</source>
+      <translation type="unfinished">Help</translation>
+    </message>
+    <message>
+      <source>R1</source>
+      <translation type="unfinished">R1</translation>
+    </message>
+    <message>
+      <source>R2</source>
+      <translation type="unfinished">R2</translation>
+    </message>
+    <message>
+      <source>L3</source>
+      <translation type="unfinished">L3</translation>
+    </message>
+    <message>
+      <source>Touchpad Click</source>
+      <translation type="unfinished">Touchpad Click</translation>
+    </message>
+    <message>
+      <source>Mouse to Joystick</source>
+      <translation type="unfinished">Mouse to Joystick</translation>
+    </message>
+    <message>
+      <source>*press F7 ingame to activate</source>
+      <translation type="unfinished">*press F7 ingame to activate</translation>
+    </message>
+    <message>
+      <source>R3</source>
+      <translation type="unfinished">R3</translation>
+    </message>
+    <message>
+      <source>Options</source>
+      <translation type="unfinished">Options</translation>
+    </message>
+    <message>
+      <source>Mouse Movement Parameters</source>
+      <translation type="unfinished">Mouse Movement Parameters</translation>
+    </message>
+    <message>
+      <source>note: click Help Button/Special Keybindings for more information</source>
+      <translation type="unfinished">note: click Help Button/Special Keybindings for more information</translation>
+    </message>
+    <message>
+      <source>Face Buttons</source>
+      <translation type="unfinished">Face Buttons</translation>
+    </message>
+    <message>
+      <source>Triangle</source>
+      <translation type="unfinished">Triangle</translation>
+    </message>
+    <message>
+      <source>Square</source>
+      <translation type="unfinished">Square</translation>
+    </message>
+    <message>
+      <source>Circle</source>
+      <translation type="unfinished">Circle</translation>
+    </message>
+    <message>
+      <source>Cross</source>
+      <translation type="unfinished">Cross</translation>
+    </message>
+    <message>
+      <source>Right Analog Halfmode</source>
+      <translation type="unfinished">Right Analog Halfmode</translation>
+    </message>
+    <message>
+      <source>hold to move right stick at half-speed</source>
+      <translation type="unfinished">hold to move right stick at half-speed</translation>
+    </message>
+    <message>
+      <source>Right Stick</source>
+      <translation type="unfinished">Right Stick</translation>
+    </message>
+    <message>
+      <source>Deadzone Offset (def 0.50): </source>
+      <translation type="unfinished">Deadzone Offset (def 0.50): </translation>
+    </message>
+    <message>
+      <source>Speed Multiplier (def 1.0): </source>
+      <translation type="unfinished">Speed Multiplier (def 1.0): </translation>
+    </message>
+    <message>
+      <source>Speed Offset (def 0.125):</source>
+      <translation type="unfinished">Speed Offset (def 0.125):</translation>
+    </message>
+    <message>
+      <source>Speed Offset (def 0.125): </source>
+      <translation type="unfinished">Speed Offset (def 0.125): </translation>
     </message>
   </context>
   <context>
@@ -1312,6 +1491,10 @@
       <translation>Trofeu</translation>
     </message>
     <message>
+      <source>Open the custom trophy images/sounds folder</source>
+      <translation>Hap dosjen e imazheve/tingujve të trofeve të personalizuar</translation>
+    </message>
+    <message>
       <source>Logger</source>
       <translation>Regjistruesi i ditarit</translation>
     </message>
@@ -1476,8 +1659,8 @@
       <translation>Muzika e titullit</translation>
     </message>
     <message>
-      <source>Disable Trophy Pop-ups</source>
-      <translation>Çaktivizo njoftimet për Trofetë</translation>
+      <source>Disable Trophy Notification</source>
+      <translation>Çaktivizo Njoftimin e Trofeut</translation>
     </message>
     <message>
       <source>Background Image</source>
@@ -1610,6 +1793,10 @@
     <message>
       <source>Update Compatibility Database:\nImmediately update the compatibility database.</source>
       <translation>Përditëso bazën e të dhënave të përputhshmërisë:\nPërditëso menjëherë bazën e të dhënave të përputhshmërisë.</translation>
+    </message>
+    <message>
+      <source>Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</source>
+      <translation>Hap dosjen e imazheve/tingujve të trofeve të personalizuar:\nMund të shtosh imazhe të personalizuara për trofetë dhe një audio.\nShto skedarët në dosjen custom_trophy me emrat që vijojnë:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nShënim: Tingulli do të punojë vetëm në versionet QT.</translation>
     </message>
     <message>
       <source>Never</source>
@@ -1765,43 +1952,79 @@
     </message>
     <message>
       <source>Video</source>
-      <translation type="unfinished">Video</translation>
+      <translation>Video</translation>
     </message>
     <message>
       <source>Display Mode</source>
-      <translation type="unfinished">Display Mode</translation>
+      <translation>Mënyra e Shfaqjes</translation>
     </message>
     <message>
       <source>Windowed</source>
-      <translation type="unfinished">Windowed</translation>
+      <translation>Dritare</translation>
     </message>
     <message>
       <source>Fullscreen</source>
-      <translation type="unfinished">Fullscreen</translation>
+      <translation>Ekran të plotë</translation>
     </message>
     <message>
       <source>Fullscreen (Borderless)</source>
-      <translation type="unfinished">Fullscreen (Borderless)</translation>
+      <translation>Ekran të plotë (Pa kufij)</translation>
     </message>
     <message>
       <source>Window Size</source>
-      <translation type="unfinished">Window Size</translation>
+      <translation>Masa e Dritares</translation>
     </message>
     <message>
       <source>W:</source>
-      <translation type="unfinished">W:</translation>
+      <translation>Gjer:</translation>
     </message>
     <message>
       <source>H:</source>
-      <translation type="unfinished">H:</translation>
+      <translation>Lart:</translation>
     </message>
     <message>
       <source>Separate Log Files</source>
-      <translation type="unfinished">Separate Log Files</translation>
+      <translation>Skedarë të Ditarit të Ndarë</translation>
     </message>
     <message>
       <source>Separate Log Files:\nWrites a separate logfile for each game.</source>
-      <translation type="unfinished">Separate Log Files:\nWrites a separate logfile for each game.</translation>
+      <translation>Skedarë të Ditarit të Ndarë:\nShkruan një skedar të ditarit të veçuar për secilën lojë.</translation>
+    </message>
+    <message>
+      <source>Trophy Notification Position</source>
+      <translation>Pozicioni i Njoftimit të Trofeve</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Majtas</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Djathtas</translation>
+    </message>
+    <message>
+      <source>Top</source>
+      <translation>Sipër</translation>
+    </message>
+    <message>
+      <source>Bottom</source>
+      <translation>Poshtë</translation>
+    </message>
+    <message>
+      <source>Notification Duration</source>
+      <translation>Kohëzgjatja e Njoftimit</translation>
+    </message>
+    <message>
+      <source>Portable User Folder</source>
+      <translation type="unfinished">Portable User Folder</translation>
+    </message>
+    <message>
+      <source>Create Portable User Folder from Common User Folder</source>
+      <translation type="unfinished">Create Portable User Folder from Common User Folder</translation>
+    </message>
+    <message>
+      <source>Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</source>
+      <translation type="unfinished">Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</translation>
     </message>
   </context>
   <context>
@@ -1809,6 +2032,22 @@
     <message>
       <source>Trophy Viewer</source>
       <translation>Shikuesi i Trofeve</translation>
+    </message>
+    <message>
+      <source>Progress</source>
+      <translation>Ecuria</translation>
+    </message>
+    <message>
+      <source>Show Earned Trophies</source>
+      <translation>Shfaq Trofetë që janë fituar</translation>
+    </message>
+    <message>
+      <source>Show Not Earned Trophies</source>
+      <translation>Shfaq Trofetë që nuk janë fituar</translation>
+    </message>
+    <message>
+      <source>Show Hidden Trophies</source>
+      <translation>Shfaq Trofetë e Fshehur</translation>
     </message>
   </context>
 </TS>

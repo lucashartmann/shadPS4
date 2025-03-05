@@ -5,6 +5,7 @@
 #include <QDirIterator>
 #include <QFileDialog>
 #include <QHoverEvent>
+#include <QMessageBox>
 #include <fmt/format.h>
 
 #include "common/config.h"
@@ -225,6 +226,32 @@ SettingsDialog::SettingsDialog(std::span<const QString> physical_devices,
             Config::setShowBackgroundImage(state == Qt::Checked);
         });
     }
+
+    // User TAB
+    {
+        connect(ui->OpenCustomTrophyLocationButton, &QPushButton::clicked, this, []() {
+            QString userPath;
+            Common::FS::PathToQString(userPath,
+                                      Common::FS::GetUserPath(Common::FS::PathType::CustomTrophy));
+            QDesktopServices::openUrl(QUrl::fromLocalFile(userPath));
+        });
+
+        connect(ui->PortableUserButton, &QPushButton::clicked, this, []() {
+            QString userDir;
+            Common::FS::PathToQString(userDir, std::filesystem::current_path() / "user");
+            if (std::filesystem::exists(std::filesystem::current_path() / "user")) {
+                QMessageBox::information(NULL, "Cannot create portable user folder",
+                                         userDir + " already exists");
+            } else {
+                std::filesystem::copy(Common::FS::GetUserPath(Common::FS::PathType::UserDir),
+                                      std::filesystem::current_path() / "user",
+                                      std::filesystem::copy_options::recursive);
+                QMessageBox::information(NULL, "Portable user folder created",
+                                         userDir + " successfully created");
+            }
+        });
+    }
+
     // Input TAB
     {
         connect(ui->hideCursorComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
@@ -280,8 +307,8 @@ SettingsDialog::SettingsDialog(std::span<const QString> physical_devices,
         connect(ui->OpenLogLocationButton, &QPushButton::clicked, this, []() {
             QString userPath;
             Common::FS::PathToQString(userPath,
-                                      Common::FS::GetUserPath(Common::FS::PathType::UserDir));
-            QDesktopServices::openUrl(QUrl::fromLocalFile(userPath + "/log"));
+                                      Common::FS::GetUserPath(Common::FS::PathType::LogDir));
+            QDesktopServices::openUrl(QUrl::fromLocalFile(userPath));
         });
     }
 
@@ -308,6 +335,9 @@ SettingsDialog::SettingsDialog(std::span<const QString> physical_devices,
         ui->checkCompatibilityOnStartupCheckBox->installEventFilter(this);
         ui->updateCompatibilityButton->installEventFilter(this);
 
+        // User
+        ui->OpenCustomTrophyLocationButton->installEventFilter(this);
+
         // Input
         ui->hideCursorGroupBox->installEventFilter(this);
         ui->idleTimeoutGroupBox->installEventFilter(this);
@@ -330,6 +360,7 @@ SettingsDialog::SettingsDialog(std::span<const QString> physical_devices,
         ui->saveDataGroupBox->installEventFilter(this);
         ui->currentSaveDataPath->installEventFilter(this);
         ui->browseButton->installEventFilter(this);
+        ui->PortableUserFolderGroupBox->installEventFilter(this);
 
         // Debug
         ui->debugDump->installEventFilter(this);
@@ -403,6 +434,15 @@ void SettingsDialog::LoadValuesFromConfig() {
     ui->playBGMCheckBox->setChecked(toml::find_or<bool>(data, "General", "playBGM", false));
     ui->disableTrophycheckBox->setChecked(
         toml::find_or<bool>(data, "General", "isTrophyPopupDisabled", false));
+    ui->popUpDurationSpinBox->setValue(Config::getTrophyNotificationDuration());
+
+    QString side = QString::fromStdString(Config::sideTrophy());
+
+    ui->radioButton_Left->setChecked(side == "left");
+    ui->radioButton_Right->setChecked(side == "right");
+    ui->radioButton_Top->setChecked(side == "top");
+    ui->radioButton_Bottom->setChecked(side == "bottom");
+
     ui->BGMVolumeSlider->setValue(toml::find_or<int>(data, "General", "BGMvolume", 50));
     ui->discordRPCCheckbox->setChecked(
         toml::find_or<bool>(data, "General", "enableDiscordRPC", true));
@@ -593,6 +633,11 @@ void SettingsDialog::updateNoteTextEdit(const QString& elementName) {
         text = tr("Update Compatibility Database:\\nImmediately update the compatibility database.");
     }
 
+    //User
+    if (elementName == "OpenCustomTrophyLocationButton") {
+        text = tr("Open the custom trophy images/sounds folder:\\nYou can add custom images to the trophies and an audio.\\nAdd the files to custom_trophy with the following names:\\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\\nNote: The sound will only work in QT versions.");
+    }
+
     // Input
     if (elementName == "hideCursorGroupBox") {
         text = tr("Hide Cursor:\\nChoose when the cursor will disappear:\\nNever: You will always see the mouse.\\nidle: Set a time for it to disappear after being idle.\\nAlways: you will never see the mouse.");
@@ -622,6 +667,8 @@ void SettingsDialog::updateNoteTextEdit(const QString& elementName) {
         text = tr("Add:\\nAdd a folder to the list.");
     } else if (elementName == "removeFolderButton") {
         text = tr("Remove:\\nRemove a folder from the list.");
+    } else if (elementName == "PortableUserFolderGroupBox") {
+        text = tr("Portable user folder:\\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.");
     }
 
     // Save Data
@@ -683,6 +730,18 @@ void SettingsDialog::UpdateSettings() {
         screenModeMap.value(ui->displayModeComboBox->currentText()).toStdString());
     Config::setIsMotionControlsEnabled(ui->motionControlsCheckBox->isChecked());
     Config::setisTrophyPopupDisabled(ui->disableTrophycheckBox->isChecked());
+    Config::setTrophyNotificationDuration(ui->popUpDurationSpinBox->value());
+
+    if (ui->radioButton_Top->isChecked()) {
+        Config::setSideTrophy("top");
+    } else if (ui->radioButton_Left->isChecked()) {
+        Config::setSideTrophy("left");
+    } else if (ui->radioButton_Right->isChecked()) {
+        Config::setSideTrophy("right");
+    } else if (ui->radioButton_Bottom->isChecked()) {
+        Config::setSideTrophy("bottom");
+    }
+
     Config::setPlayBGM(ui->playBGMCheckBox->isChecked());
     Config::setAllowHDR(ui->enableHDRCheckBox->isChecked());
     Config::setLogType(logTypeMap.value(ui->logTypeComboBox->currentText()).toStdString());
