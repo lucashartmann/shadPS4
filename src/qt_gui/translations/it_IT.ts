@@ -776,6 +776,10 @@
       <translation>Elimina DLC</translation>
     </message>
     <message>
+      <source>Delete Trophy</source>
+      <translation>Elimina Trofei</translation>
+    </message>
+    <message>
       <source>Compatibility...</source>
       <translation>Compatibilità...</translation>
     </message>
@@ -852,6 +856,10 @@
       <translation>Questo gioco non ha nessuna cartella di aggiornamento da aprire!</translation>
     </message>
     <message>
+      <source>No log file found for this game!</source>
+      <translation>Nessun file di log trovato per questo gioco!</translation>
+    </message>
+    <message>
       <source>Failed to convert icon.</source>
       <translation>Impossibile convertire l'icona.</translation>
     </message>
@@ -860,8 +868,16 @@
       <translation>Questo gioco non ha alcun salvataggio dati da eliminare!</translation>
     </message>
     <message>
+      <source>This game has no saved trophies to delete!</source>
+      <translation>Questo gioco non ha nessun trofeo salvato da eliminare!</translation>
+    </message>
+    <message>
       <source>Save Data</source>
       <translation>Dati Salvataggio</translation>
+    </message>
+    <message>
+      <source>Trophy</source>
+      <translation>Trofei</translation>
     </message>
     <message>
       <source>SFO Viewer for </source>
@@ -885,6 +901,165 @@
     <message>
       <source>Delete PKG File on Install</source>
       <translation>Elimina file PKG dopo Installazione</translation>
+    </message>
+  </context>
+  <context>
+    <name>KBMSettings</name>
+    <message>
+      <source>Configure Controls</source>
+      <translation>Configura Comandi</translation>
+    </message>
+    <message>
+      <source>D-Pad</source>
+      <translation>Croce direzionale</translation>
+    </message>
+    <message>
+      <source>Up</source>
+      <translation>Su</translation>
+    </message>
+    <message>
+      <source>unmapped</source>
+      <translation>non mappato</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Sinistra</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Destra</translation>
+    </message>
+    <message>
+      <source>Down</source>
+      <translation>Giù</translation>
+    </message>
+    <message>
+      <source>Left Analog Halfmode</source>
+      <translation>Mezza Modalità Analogico Sinistra</translation>
+    </message>
+    <message>
+      <source>hold to move left stick at half-speed</source>
+      <translation>tieni premuto per muovere la levetta analogica sinistra a metà velocità</translation>
+    </message>
+    <message>
+      <source>Left Stick</source>
+      <translation>Levetta Sinistra</translation>
+    </message>
+    <message>
+      <source>Config Selection</source>
+      <translation>Selezione Configurazione</translation>
+    </message>
+    <message>
+      <source>Common Config</source>
+      <translation>Configurazione Comune</translation>
+    </message>
+    <message>
+      <source>Use per-game configs</source>
+      <translation>Usa configurazioni per gioco</translation>
+    </message>
+    <message>
+      <source>L1</source>
+      <translation>L1</translation>
+    </message>
+    <message>
+      <source>L2</source>
+      <translation>L2</translation>
+    </message>
+    <message>
+      <source>Text Editor</source>
+      <translation>Editor Testuale</translation>
+    </message>
+    <message>
+      <source>Help</source>
+      <translation>Aiuto</translation>
+    </message>
+    <message>
+      <source>R1</source>
+      <translation>R1</translation>
+    </message>
+    <message>
+      <source>R2</source>
+      <translation>R2</translation>
+    </message>
+    <message>
+      <source>L3</source>
+      <translation>L3</translation>
+    </message>
+    <message>
+      <source>Touchpad Click</source>
+      <translation>Click Touchpad</translation>
+    </message>
+    <message>
+      <source>Mouse to Joystick</source>
+      <translation>Mouse a Joystick</translation>
+    </message>
+    <message>
+      <source>*press F7 ingame to activate</source>
+      <translation>*premere F7 in gioco per attivare</translation>
+    </message>
+    <message>
+      <source>R3</source>
+      <translation>R3</translation>
+    </message>
+    <message>
+      <source>Options</source>
+      <translation>Opzioni</translation>
+    </message>
+    <message>
+      <source>Mouse Movement Parameters</source>
+      <translation>Parametri Movimento Del Mouse</translation>
+    </message>
+    <message>
+      <source>note: click Help Button/Special Keybindings for more information</source>
+      <translation>nota: cliccare sul Pulsante Aiuto/Associazioni Speciali dei Tasti per maggiori informazioni</translation>
+    </message>
+    <message>
+      <source>Face Buttons</source>
+      <translation>Pulsanti Frontali</translation>
+    </message>
+    <message>
+      <source>Triangle</source>
+      <translation>Triangolo</translation>
+    </message>
+    <message>
+      <source>Square</source>
+      <translation>Quadrato</translation>
+    </message>
+    <message>
+      <source>Circle</source>
+      <translation>Cerchio</translation>
+    </message>
+    <message>
+      <source>Cross</source>
+      <translation>Croce</translation>
+    </message>
+    <message>
+      <source>Right Analog Halfmode</source>
+      <translation>Mezza Modalità Analogico Destra</translation>
+    </message>
+    <message>
+      <source>hold to move right stick at half-speed</source>
+      <translation>tieni premuto per muovere la levetta analogica destra a metà velocità</translation>
+    </message>
+    <message>
+      <source>Right Stick</source>
+      <translation>Levetta Destra</translation>
+    </message>
+    <message>
+      <source>Speed Offset (def 0.125):</source>
+      <translation>Scostamento Velocità (def 0,125):</translation>
+    </message>
+    <message>
+      <source>Copy from Common Config</source>
+      <translation>Copia da Configurazione Comune</translation>
+    </message>
+    <message>
+      <source>Deadzone Offset (def 0.50):</source>
+      <translation>Scostamento Zona Morta (def 0,50):</translation>
+    </message>
+    <message>
+      <source>Speed Multiplier (def 1.0):</source>
+      <translation>Moltiplicatore Di Velocità (def 1,0):</translation>
     </message>
   </context>
   <context>
@@ -1312,6 +1487,10 @@
       <translation>Trofei</translation>
     </message>
     <message>
+      <source>Open the custom trophy images/sounds folder</source>
+      <translation>Apri la cartella personalizzata delle immagini/suoni dei trofei</translation>
+    </message>
+    <message>
       <source>Logger</source>
       <translation>Registro</translation>
     </message>
@@ -1476,8 +1655,8 @@
       <translation>Musica del Titolo</translation>
     </message>
     <message>
-      <source>Disable Trophy Pop-ups</source>
-      <translation>Disabilita Notifica Trofei</translation>
+      <source>Disable Trophy Notification</source>
+      <translation>Disabilita Notifiche Trofei</translation>
     </message>
     <message>
       <source>Background Image</source>
@@ -1610,6 +1789,10 @@
     <message>
       <source>Update Compatibility Database:\nImmediately update the compatibility database.</source>
       <translation>Aggiorna Database Compatibilità:\nAggiorna immediatamente il database di compatibilità.</translation>
+    </message>
+    <message>
+      <source>Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</source>
+      <translation>Apri la cartella personalizzata delle immagini/suoni trofei:\nÈ possibile aggiungere immagini personalizzate ai trofei e un audio.\nAggiungi i file a custom_trophy con i seguenti nomi:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNota: Il suono funzionerà solo nelle versioni QT.</translation>
     </message>
     <message>
       <source>Never</source>
@@ -1803,12 +1986,64 @@
       <source>Separate Log Files:\nWrites a separate logfile for each game.</source>
       <translation>File di registro separati:\nScrive un file di registro separato per ogni gioco.</translation>
     </message>
+    <message>
+      <source>Trophy Notification Position</source>
+      <translation>Posizione Notifica Trofei</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Sinistra</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Destra</translation>
+    </message>
+    <message>
+      <source>Top</source>
+      <translation>In alto</translation>
+    </message>
+    <message>
+      <source>Bottom</source>
+      <translation>In basso</translation>
+    </message>
+    <message>
+      <source>Notification Duration</source>
+      <translation>Durata Notifica</translation>
+    </message>
+    <message>
+      <source>Portable User Folder</source>
+      <translation>Cartella Utente Portatile</translation>
+    </message>
+    <message>
+      <source>Create Portable User Folder from Common User Folder</source>
+      <translation>Crea una Cartella Utente Portatile dalla Cartella Comune Utente</translation>
+    </message>
+    <message>
+      <source>Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</source>
+      <translation>Cartella utente portatile:\nMemorizza le impostazioni e i dati shadPS4 che saranno applicati solo alla build shadPS4 situata nella cartella attuale. Riavviare l'applicazione dopo aver creato la cartella utente portatile per iniziare a usarla.</translation>
+    </message>
   </context>
   <context>
     <name>TrophyViewer</name>
     <message>
       <source>Trophy Viewer</source>
       <translation>Visualizzatore Trofei</translation>
+    </message>
+    <message>
+      <source>Progress</source>
+      <translation>Progresso</translation>
+    </message>
+    <message>
+      <source>Show Earned Trophies</source>
+      <translation>Mostra Trofei Guadagnati</translation>
+    </message>
+    <message>
+      <source>Show Not Earned Trophies</source>
+      <translation>Mostra Trofei Non Guadagnati</translation>
+    </message>
+    <message>
+      <source>Show Hidden Trophies</source>
+      <translation>Mostra Trofei Nascosti</translation>
     </message>
   </context>
 </TS>

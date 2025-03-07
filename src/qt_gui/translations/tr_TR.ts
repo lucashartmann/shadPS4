@@ -451,7 +451,7 @@
     </message>
     <message>
       <source>Use per-game configs</source>
-      <translation>Oyuna özel yapılandırmaları kullan</translation>
+      <translation>Oyuna özel yapılandırma kullan</translation>
     </message>
     <message>
       <source>L1 / LB</source>
@@ -776,6 +776,10 @@
       <translation>İndirilebilir İçeriği Sil</translation>
     </message>
     <message>
+      <source>Delete Trophy</source>
+      <translation>Kupayı Sil</translation>
+    </message>
+    <message>
       <source>Compatibility...</source>
       <translation>Uyumluluk...</translation>
     </message>
@@ -852,6 +856,10 @@
       <translation>Bu oyunun açılacak güncelleme klasörü yok!</translation>
     </message>
     <message>
+      <source>No log file found for this game!</source>
+      <translation type="unfinished">No log file found for this game!</translation>
+    </message>
+    <message>
       <source>Failed to convert icon.</source>
       <translation>Simge dönüştürülemedi.</translation>
     </message>
@@ -860,8 +868,16 @@
       <translation>Bu oyunun silinecek kayıt verisi yok!</translation>
     </message>
     <message>
+      <source>This game has no saved trophies to delete!</source>
+      <translation>Bu oyunun silinecek kupası yok!</translation>
+    </message>
+    <message>
       <source>Save Data</source>
       <translation>Kayıt Verisi</translation>
+    </message>
+    <message>
+      <source>Trophy</source>
+      <translation>Kupa</translation>
     </message>
     <message>
       <source>SFO Viewer for </source>
@@ -885,6 +901,165 @@
     <message>
       <source>Delete PKG File on Install</source>
       <translation>Yüklemede PKG Dosyasını Sil</translation>
+    </message>
+  </context>
+  <context>
+    <name>KBMSettings</name>
+    <message>
+      <source>Configure Controls</source>
+      <translation>Kontrolleri Yapılandır</translation>
+    </message>
+    <message>
+      <source>D-Pad</source>
+      <translation>Yön Düğmeleri</translation>
+    </message>
+    <message>
+      <source>Up</source>
+      <translation>Yukarı</translation>
+    </message>
+    <message>
+      <source>unmapped</source>
+      <translation type="unfinished">unmapped</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Sol</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Sağ</translation>
+    </message>
+    <message>
+      <source>Down</source>
+      <translation>Aşağı</translation>
+    </message>
+    <message>
+      <source>Left Analog Halfmode</source>
+      <translation type="unfinished">Left Analog Halfmode</translation>
+    </message>
+    <message>
+      <source>hold to move left stick at half-speed</source>
+      <translation type="unfinished">hold to move left stick at half-speed</translation>
+    </message>
+    <message>
+      <source>Left Stick</source>
+      <translation>Sol Analog</translation>
+    </message>
+    <message>
+      <source>Config Selection</source>
+      <translation>Yapılandırma Seçimi</translation>
+    </message>
+    <message>
+      <source>Common Config</source>
+      <translation>Genel Yapılandırma</translation>
+    </message>
+    <message>
+      <source>Use per-game configs</source>
+      <translation>Oyuna özel yapılandırma kullan</translation>
+    </message>
+    <message>
+      <source>L1</source>
+      <translation>L1</translation>
+    </message>
+    <message>
+      <source>L2</source>
+      <translation>L2</translation>
+    </message>
+    <message>
+      <source>Text Editor</source>
+      <translation>Metin Düzenleyici</translation>
+    </message>
+    <message>
+      <source>Help</source>
+      <translation>Yardım</translation>
+    </message>
+    <message>
+      <source>R1</source>
+      <translation>R1</translation>
+    </message>
+    <message>
+      <source>R2</source>
+      <translation>R2</translation>
+    </message>
+    <message>
+      <source>L3</source>
+      <translation>L3</translation>
+    </message>
+    <message>
+      <source>Touchpad Click</source>
+      <translation type="unfinished">Touchpad Click</translation>
+    </message>
+    <message>
+      <source>Mouse to Joystick</source>
+      <translation type="unfinished">Mouse to Joystick</translation>
+    </message>
+    <message>
+      <source>*press F7 ingame to activate</source>
+      <translation type="unfinished">*press F7 ingame to activate</translation>
+    </message>
+    <message>
+      <source>R3</source>
+      <translation>R3</translation>
+    </message>
+    <message>
+      <source>Options</source>
+      <translation>Seçenekler</translation>
+    </message>
+    <message>
+      <source>Mouse Movement Parameters</source>
+      <translation>Mouse Hızı Değişkenleri</translation>
+    </message>
+    <message>
+      <source>note: click Help Button/Special Keybindings for more information</source>
+      <translation type="unfinished">note: click Help Button/Special Keybindings for more information</translation>
+    </message>
+    <message>
+      <source>Face Buttons</source>
+      <translation>Eylem Düğmeleri</translation>
+    </message>
+    <message>
+      <source>Triangle</source>
+      <translation>Üçgen</translation>
+    </message>
+    <message>
+      <source>Square</source>
+      <translation>Kare</translation>
+    </message>
+    <message>
+      <source>Circle</source>
+      <translation>Daire</translation>
+    </message>
+    <message>
+      <source>Cross</source>
+      <translation>Çarpı</translation>
+    </message>
+    <message>
+      <source>Right Analog Halfmode</source>
+      <translation type="unfinished">Right Analog Halfmode</translation>
+    </message>
+    <message>
+      <source>hold to move right stick at half-speed</source>
+      <translation type="unfinished">hold to move right stick at half-speed</translation>
+    </message>
+    <message>
+      <source>Right Stick</source>
+      <translation>Sağ Analog</translation>
+    </message>
+    <message>
+      <source>Speed Offset (def 0.125):</source>
+      <translation type="unfinished">Speed Offset (def 0.125):</translation>
+    </message>
+    <message>
+      <source>Copy from Common Config</source>
+      <translation>Genel Yapılandırmadan Kopyala</translation>
+    </message>
+    <message>
+      <source>Deadzone Offset (def 0.50):</source>
+      <translation type="unfinished">Deadzone Offset (def 0.50):</translation>
+    </message>
+    <message>
+      <source>Speed Multiplier (def 1.0):</source>
+      <translation type="unfinished">Speed Multiplier (def 1.0):</translation>
     </message>
   </context>
   <context>
@@ -1312,6 +1487,10 @@
       <translation>Kupa</translation>
     </message>
     <message>
+      <source>Open the custom trophy images/sounds folder</source>
+      <translation>Özel kupa görüntüleri/sesleri klasörünü aç</translation>
+    </message>
+    <message>
       <source>Logger</source>
       <translation>Kayıt Tutucu</translation>
     </message>
@@ -1476,8 +1655,8 @@
       <translation>Oyun Müziği</translation>
     </message>
     <message>
-      <source>Disable Trophy Pop-ups</source>
-      <translation>Kupa Açılır Pencerelerini Devre Dışı Bırak</translation>
+      <source>Disable Trophy Notification</source>
+      <translation>Kupa Bildirimini Devre Dışı Bırak</translation>
     </message>
     <message>
       <source>Background Image</source>
@@ -1612,6 +1791,10 @@
       <translation>Uyumluluk Veritabanını Güncelle:\nUyumluluk veri tabanını hemen güncelleyin.</translation>
     </message>
     <message>
+      <source>Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</source>
+      <translation type="unfinished">Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</translation>
+    </message>
+    <message>
       <source>Never</source>
       <translation>Asla</translation>
     </message>
@@ -1661,7 +1844,7 @@
     </message>
     <message>
       <source>Enable HDR:\nEnables HDR in games that support it.\nYour monitor must have support for the BT2020 PQ color space and the RGB10A2 swapchain format.</source>
-      <translation type="unfinished">Enable HDR:\nEnables HDR in games that support it.\nYour monitor must have support for the BT2020 PQ color space and the RGB10A2 swapchain format.</translation>
+      <translation>HDR'yi Etkinleştir:\nDestekleyen oyunlarda HDR'yi etkinleştirir.\nMonitörünüz, BT2020 PQ renk alanını ve RGB10A2 takas zinciri biçimini desteklemelidir.</translation>
     </message>
     <message>
       <source>Game Folders:\nThe list of folders to check for installed games.</source>
@@ -1765,15 +1948,15 @@
     </message>
     <message>
       <source>Video</source>
-      <translation type="unfinished">Video</translation>
+      <translation>Görüntü</translation>
     </message>
     <message>
       <source>Display Mode</source>
-      <translation type="unfinished">Display Mode</translation>
+      <translation>Görüntü Modu</translation>
     </message>
     <message>
       <source>Windowed</source>
-      <translation type="unfinished">Windowed</translation>
+      <translation>Pencereli</translation>
     </message>
     <message>
       <source>Fullscreen</source>
@@ -1803,12 +1986,64 @@
       <source>Separate Log Files:\nWrites a separate logfile for each game.</source>
       <translation>Ayrı Günlük Dosyaları:\nHer oyun için ayrı bir günlük dosyası yazar.</translation>
     </message>
+    <message>
+      <source>Trophy Notification Position</source>
+      <translation>Kupa Bildirim Konumu</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Sol</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Sağ</translation>
+    </message>
+    <message>
+      <source>Top</source>
+      <translation type="unfinished">Top</translation>
+    </message>
+    <message>
+      <source>Bottom</source>
+      <translation type="unfinished">Bottom</translation>
+    </message>
+    <message>
+      <source>Notification Duration</source>
+      <translation>Bildirim Süresi</translation>
+    </message>
+    <message>
+      <source>Portable User Folder</source>
+      <translation type="unfinished">Portable User Folder</translation>
+    </message>
+    <message>
+      <source>Create Portable User Folder from Common User Folder</source>
+      <translation type="unfinished">Create Portable User Folder from Common User Folder</translation>
+    </message>
+    <message>
+      <source>Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</source>
+      <translation type="unfinished">Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</translation>
+    </message>
   </context>
   <context>
     <name>TrophyViewer</name>
     <message>
       <source>Trophy Viewer</source>
       <translation>Kupa Görüntüleyici</translation>
+    </message>
+    <message>
+      <source>Progress</source>
+      <translation>İlerleme</translation>
+    </message>
+    <message>
+      <source>Show Earned Trophies</source>
+      <translation>Kazanılmış Kupaları Göster</translation>
+    </message>
+    <message>
+      <source>Show Not Earned Trophies</source>
+      <translation>Kazanılmamış Kupaları Göster</translation>
+    </message>
+    <message>
+      <source>Show Hidden Trophies</source>
+      <translation>Gizli Kupaları Göster</translation>
     </message>
   </context>
 </TS>

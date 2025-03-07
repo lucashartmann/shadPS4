@@ -776,6 +776,10 @@
       <translation>Удалить DLC</translation>
     </message>
     <message>
+      <source>Delete Trophy</source>
+      <translation>Удалить трофей</translation>
+    </message>
+    <message>
       <source>Compatibility...</source>
       <translation>Совместимость...</translation>
     </message>
@@ -852,6 +856,10 @@
       <translation>У этой игры нет папки обновлений, которую можно открыть!</translation>
     </message>
     <message>
+      <source>No log file found for this game!</source>
+      <translation>Не найден файл логов для этой игры!</translation>
+    </message>
+    <message>
       <source>Failed to convert icon.</source>
       <translation>Не удалось преобразовать иконку.</translation>
     </message>
@@ -860,8 +868,16 @@
       <translation>У этой игры нет сохранений, которые можно удалить!</translation>
     </message>
     <message>
+      <source>This game has no saved trophies to delete!</source>
+      <translation>У этой игры нет сохраненных трофеев для удаления!</translation>
+    </message>
+    <message>
       <source>Save Data</source>
       <translation>Сохранения</translation>
+    </message>
+    <message>
+      <source>Trophy</source>
+      <translation>Трофей</translation>
     </message>
     <message>
       <source>SFO Viewer for </source>
@@ -885,6 +901,165 @@
     <message>
       <source>Delete PKG File on Install</source>
       <translation>Удалить файл PKG при установке</translation>
+    </message>
+  </context>
+  <context>
+    <name>KBMSettings</name>
+    <message>
+      <source>Configure Controls</source>
+      <translation>Настроить управление</translation>
+    </message>
+    <message>
+      <source>D-Pad</source>
+      <translation>Крестовина</translation>
+    </message>
+    <message>
+      <source>Up</source>
+      <translation>Вверх</translation>
+    </message>
+    <message>
+      <source>unmapped</source>
+      <translation>не назначено</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Влево</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Вправо</translation>
+    </message>
+    <message>
+      <source>Down</source>
+      <translation>Вниз</translation>
+    </message>
+    <message>
+      <source>Left Analog Halfmode</source>
+      <translation>Левый стик вполовину</translation>
+    </message>
+    <message>
+      <source>hold to move left stick at half-speed</source>
+      <translation>удерживайте для перемещения левого стика вполовину меньше</translation>
+    </message>
+    <message>
+      <source>Left Stick</source>
+      <translation>Левый стик</translation>
+    </message>
+    <message>
+      <source>Config Selection</source>
+      <translation>Выбор конфига</translation>
+    </message>
+    <message>
+      <source>Common Config</source>
+      <translation>Общий конфиг</translation>
+    </message>
+    <message>
+      <source>Use per-game configs</source>
+      <translation>Использовать настройки для каждой игры</translation>
+    </message>
+    <message>
+      <source>L1</source>
+      <translation>L1</translation>
+    </message>
+    <message>
+      <source>L2</source>
+      <translation>L2</translation>
+    </message>
+    <message>
+      <source>Text Editor</source>
+      <translation>Текстовый редактор</translation>
+    </message>
+    <message>
+      <source>Help</source>
+      <translation>Помощь</translation>
+    </message>
+    <message>
+      <source>R1</source>
+      <translation>R1</translation>
+    </message>
+    <message>
+      <source>R2</source>
+      <translation>R2</translation>
+    </message>
+    <message>
+      <source>L3</source>
+      <translation>L3</translation>
+    </message>
+    <message>
+      <source>Touchpad Click</source>
+      <translation>Нажатие на тачпад</translation>
+    </message>
+    <message>
+      <source>Mouse to Joystick</source>
+      <translation>Мышь в джойстик</translation>
+    </message>
+    <message>
+      <source>*press F7 ingame to activate</source>
+      <translation>*нажмите F7 в игре для активации</translation>
+    </message>
+    <message>
+      <source>R3</source>
+      <translation>R3</translation>
+    </message>
+    <message>
+      <source>Options</source>
+      <translation>Options</translation>
+    </message>
+    <message>
+      <source>Mouse Movement Parameters</source>
+      <translation>Параметры движения мыши</translation>
+    </message>
+    <message>
+      <source>note: click Help Button/Special Keybindings for more information</source>
+      <translation>примечание: нажмите кнопку Help/Special Keybindings клавиш для получения дополнительной информации</translation>
+    </message>
+    <message>
+      <source>Face Buttons</source>
+      <translation>Кнопки действий</translation>
+    </message>
+    <message>
+      <source>Triangle</source>
+      <translation>Треугольник</translation>
+    </message>
+    <message>
+      <source>Square</source>
+      <translation>Квадрат</translation>
+    </message>
+    <message>
+      <source>Circle</source>
+      <translation>Круг</translation>
+    </message>
+    <message>
+      <source>Cross</source>
+      <translation>Крест</translation>
+    </message>
+    <message>
+      <source>Right Analog Halfmode</source>
+      <translation>Правый стик вполовину</translation>
+    </message>
+    <message>
+      <source>hold to move right stick at half-speed</source>
+      <translation>удерживайте для перемещения правого стика вполовину меньше</translation>
+    </message>
+    <message>
+      <source>Right Stick</source>
+      <translation>Правый стик</translation>
+    </message>
+    <message>
+      <source>Speed Offset (def 0.125):</source>
+      <translation>Смещение скорости (по умолч 0.125):</translation>
+    </message>
+    <message>
+      <source>Copy from Common Config</source>
+      <translation>Копировать из общего конфига</translation>
+    </message>
+    <message>
+      <source>Deadzone Offset (def 0.50):</source>
+      <translation>Смещение мёртвой зоны (по умолч 0.50)</translation>
+    </message>
+    <message>
+      <source>Speed Multiplier (def 1.0):</source>
+      <translation>Множитель скорости (по умолч 1.0)</translation>
     </message>
   </context>
   <context>
@@ -1312,6 +1487,10 @@
       <translation>Трофеи</translation>
     </message>
     <message>
+      <source>Open the custom trophy images/sounds folder</source>
+      <translation>Открыть папку с пользовательскими изображениями/звуками трофеев</translation>
+    </message>
+    <message>
       <source>Logger</source>
       <translation>Логирование</translation>
     </message>
@@ -1476,8 +1655,8 @@
       <translation>Заглавная музыка</translation>
     </message>
     <message>
-      <source>Disable Trophy Pop-ups</source>
-      <translation>Отключить уведомления о трофеях</translation>
+      <source>Disable Trophy Notification</source>
+      <translation>Отключить уведомления о трофее</translation>
     </message>
     <message>
       <source>Background Image</source>
@@ -1610,6 +1789,10 @@
     <message>
       <source>Update Compatibility Database:\nImmediately update the compatibility database.</source>
       <translation>Обновить базу совместимости:\nНемедленно обновить базу данных совместимости.</translation>
+    </message>
+    <message>
+      <source>Open the custom trophy images/sounds folder:\nYou can add custom images to the trophies and an audio.\nAdd the files to custom_trophy with the following names:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nNote: The sound will only work in QT versions.</source>
+      <translation>Открыть папку с пользовательскими изображениями/звуками трофеев:\nВы можете добавить пользовательские изображения к трофеям и аудио.\nДобавьте файлы в custom_trophy со следующими именами:\ntrophy.mp3, bronze.png, gold.png, platinum.png, silver.png\nПримечание: звук будет работать только в QT-версии.</translation>
     </message>
     <message>
       <source>Never</source>
@@ -1803,12 +1986,64 @@
       <source>Separate Log Files:\nWrites a separate logfile for each game.</source>
       <translation>Отдельные файлы логов:\nПишет отдельный файл логов для каждой игры.</translation>
     </message>
+    <message>
+      <source>Trophy Notification Position</source>
+      <translation>Местоположение уведомления о трофее</translation>
+    </message>
+    <message>
+      <source>Left</source>
+      <translation>Слева</translation>
+    </message>
+    <message>
+      <source>Right</source>
+      <translation>Справа</translation>
+    </message>
+    <message>
+      <source>Top</source>
+      <translation>Сверху</translation>
+    </message>
+    <message>
+      <source>Bottom</source>
+      <translation>Снизу</translation>
+    </message>
+    <message>
+      <source>Notification Duration</source>
+      <translation>Продолжительность уведомления</translation>
+    </message>
+    <message>
+      <source>Portable User Folder</source>
+      <translation>Портативная папка пользователя</translation>
+    </message>
+    <message>
+      <source>Create Portable User Folder from Common User Folder</source>
+      <translation>Создать портативную папку пользователя из общей папки пользователя</translation>
+    </message>
+    <message>
+      <source>Portable user folder:\nStores shadPS4 settings and data that will be applied only to the shadPS4 build located in the current folder. Restart the app after creating the portable user folder to begin using it.</source>
+      <translation>Портативная папка пользователя:\nХранит настройки и данные shadPS4, которые будут применяться только к билду shadPS4, расположенному в этой папке. Перезагрузите приложение после создания портативной папки пользователя чтобы начать использовать её.</translation>
+    </message>
   </context>
   <context>
     <name>TrophyViewer</name>
     <message>
       <source>Trophy Viewer</source>
       <translation>Просмотр трофеев</translation>
+    </message>
+    <message>
+      <source>Progress</source>
+      <translation>Прогресс</translation>
+    </message>
+    <message>
+      <source>Show Earned Trophies</source>
+      <translation>Показать заработанные трофеи</translation>
+    </message>
+    <message>
+      <source>Show Not Earned Trophies</source>
+      <translation>Показать не заработанные трофеи</translation>
+    </message>
+    <message>
+      <source>Show Hidden Trophies</source>
+      <translation>Показать скрытые трофеи</translation>
     </message>
   </context>
 </TS>
