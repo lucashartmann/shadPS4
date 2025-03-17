@@ -584,6 +584,7 @@ set(COMMON src/common/logging/backend.cpp
            src/common/spin_lock.h
            src/common/stb.cpp
            src/common/stb.h
+           src/common/string_literal.h
            src/common/string_util.cpp
            src/common/string_util.h
            src/common/thread.cpp
@@ -643,8 +644,6 @@ set(CORE src/core/aerolib/stubs.cpp
          src/core/file_format/playgo_chunk.h
          src/core/file_format/trp.cpp
          src/core/file_format/trp.h
-         src/core/file_format/splash.h
-         src/core/file_format/splash.cpp
          src/core/file_sys/fs.cpp
          src/core/file_sys/fs.h
          src/core/loader.cpp
@@ -845,6 +844,10 @@ set(VIDEO_CORE src/video_core/amdgpu/liverpool.cpp
                src/video_core/renderer_vulkan/vk_shader_util.h
                src/video_core/renderer_vulkan/vk_swapchain.cpp
                src/video_core/renderer_vulkan/vk_swapchain.h
+               src/video_core/renderer_vulkan/host_passes/fsr_pass.cpp
+               src/video_core/renderer_vulkan/host_passes/fsr_pass.h
+               src/video_core/renderer_vulkan/host_passes/pp_pass.cpp
+               src/video_core/renderer_vulkan/host_passes/pp_pass.h
                src/video_core/texture_cache/image.cpp
                src/video_core/texture_cache/image.h
                src/video_core/texture_cache/image_info.cpp
