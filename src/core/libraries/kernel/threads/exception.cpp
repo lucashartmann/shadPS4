@@ -154,7 +154,7 @@ int PS4_SYSV_ABI sceKernelDebugRaiseException() {
 }
 
 int PS4_SYSV_ABI sceKernelDebugRaiseExceptionOnReleaseMode() {
-    UNREACHABLE();
+    // UNREACHABLE();
     return 0;
 }
 

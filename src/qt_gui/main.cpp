@@ -157,18 +157,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    const auto& installDirs = Config::getGameInstallDirsEnabled();
-    bool allInstallDirsDisabled = true;
-    for (bool enabled : installDirs) {
-        if (enabled) {
-            allInstallDirsDisabled = false;
-            break;
-        }
-    }
-
-    // If no game directory is set and no command line argument, prompt for it
-    if (Config::getGameInstallDirs().empty() && allInstallDirsDisabled &&
-        !has_command_line_argument) {
+    // If no game directories are set and no command line argument, prompt for it
+    if (Config::getGameInstallDirsEnabled().empty() && !has_command_line_argument) {
         GameInstallDialog dlg;
         dlg.exec();
     }
