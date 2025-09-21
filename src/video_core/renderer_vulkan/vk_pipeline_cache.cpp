@@ -167,8 +167,14 @@ const Shader::RuntimeInfo& PipelineCache::BuildRuntimeInfo(Stage stage, LogicalS
         BuildCommon(regs.ps_program);
         info.fs_info.en_flags = regs.ps_input_ena;
         info.fs_info.addr_flags = regs.ps_input_addr;
-        const auto& ps_inputs = regs.ps_inputs;
         info.fs_info.num_inputs = regs.num_interp;
+        info.fs_info.z_export_format = regs.z_export_format;
+        u8 stencil_ref_export_enable = regs.depth_shader_control.stencil_op_val_export_enable |
+                                       regs.depth_shader_control.stencil_test_val_export_enable;
+        info.fs_info.mrtz_mask = regs.depth_shader_control.z_export_enable |
+                                 (stencil_ref_export_enable << 1) |
+                                 (regs.depth_shader_control.mask_export_enable << 2) |
+                                 (regs.depth_shader_control.coverage_to_mask_enable << 3);
         const auto& cb0_blend = regs.blend_control[0];
         if (cb0_blend.enable) {
             info.fs_info.dual_source_blending =
@@ -182,6 +188,7 @@ const Shader::RuntimeInfo& PipelineCache::BuildRuntimeInfo(Stage stage, LogicalS
         } else {
             info.fs_info.dual_source_blending = false;
         }
+        const auto& ps_inputs = regs.ps_inputs;
         for (u32 i = 0; i < regs.num_interp; i++) {
             info.fs_info.inputs[i] = {
                 .param_index = u8(ps_inputs[i].input_offset.Value()),
@@ -223,6 +230,7 @@ PipelineCache::PipelineCache(const Instance& instance_, Scheduler& scheduler_,
         .support_int8 = instance.IsShaderInt8Supported(),
         .support_int16 = instance.IsShaderInt16Supported(),
         .support_int64 = instance.IsShaderInt64Supported(),
+        .support_float16 = instance.IsShaderFloat16Supported(),
         .support_float64 = instance.IsShaderFloat64Supported(),
         .support_fp32_denorm_preserve = bool(vk12_props.shaderDenormPreserveFloat32),
         .support_fp32_denorm_flush = bool(vk12_props.shaderDenormFlushToZeroFloat32),

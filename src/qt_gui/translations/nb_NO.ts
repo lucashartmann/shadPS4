@@ -454,14 +454,6 @@
       <translation>Bruk oppsett per spill</translation>
     </message>
     <message>
-      <source>L3</source>
-      <translation>L3</translation>
-    </message>
-    <message>
-      <source>R3</source>
-      <translation>R3</translation>
-    </message>
-    <message>
       <source>Face Buttons</source>
       <translation>Handlingsknapper</translation>
     </message>
@@ -480,18 +472,6 @@
     <message>
       <source>Color Adjustment</source>
       <translation>Fargejustering</translation>
-    </message>
-    <message>
-      <source>R:</source>
-      <translation>R:</translation>
-    </message>
-    <message>
-      <source>G:</source>
-      <translation>G:</translation>
-    </message>
-    <message>
-      <source>B:</source>
-      <translation>B:</translation>
     </message>
     <message>
       <source>Override Lightbar Color</source>
@@ -530,24 +510,8 @@
       <translation>Ikke tildelt</translation>
     </message>
     <message>
-      <source>L1</source>
-      <translation>L1</translation>
-    </message>
-    <message>
-      <source>R1</source>
-      <translation>R1</translation>
-    </message>
-    <message>
-      <source>L2</source>
-      <translation>L2</translation>
-    </message>
-    <message>
       <source>Options</source>
       <translation>Options</translation>
-    </message>
-    <message>
-      <source>R2</source>
-      <translation>R2</translation>
     </message>
     <message>
       <source>Touchpad Left</source>
@@ -648,6 +612,18 @@
     <message>
       <source>Default controller setting removed</source>
       <translation>Fjernet instillinger for standardkontroller</translation>
+    </message>
+    <message>
+      <source>RED</source>
+      <translation>RØD</translation>
+    </message>
+    <message>
+      <source>GREEN</source>
+      <translation>GRØNN</translation>
+    </message>
+    <message>
+      <source>BLUE</source>
+      <translation>BLÅ</translation>
     </message>
   </context>
   <context>
@@ -943,18 +919,6 @@
       <translation>Kompatibilitet …</translation>
     </message>
     <message>
-      <source>Update database</source>
-      <translation>Oppdater database</translation>
-    </message>
-    <message>
-      <source>View report</source>
-      <translation>Vis rapport</translation>
-    </message>
-    <message>
-      <source>Submit a report</source>
-      <translation>Send inn en rapport</translation>
-    </message>
-    <message>
       <source>Shortcut creation</source>
       <translation>Snarvei opprettelse</translation>
     </message>
@@ -1045,6 +1009,42 @@
     <message>
       <source>Add to Favorites</source>
       <translation>Legg til i favoritter</translation>
+    </message>
+    <message>
+      <source>Game-specific Settings...</source>
+      <translation>Innstillinger for enkeltspill …</translation>
+    </message>
+    <message>
+      <source>Configure Game-specific Settings</source>
+      <translation>Sett opp innstillinger for enkeltspill</translation>
+    </message>
+    <message>
+      <source>Create Game-specific Settings from Global Settings</source>
+      <translation>Lag innstillinger for enkeltspill fra globale innstillinger</translation>
+    </message>
+    <message>
+      <source>Delete Game-specific Settings</source>
+      <translation>Slett innstillinger for enkeltspill</translation>
+    </message>
+    <message>
+      <source>Update Database</source>
+      <translation>Oppdater database</translation>
+    </message>
+    <message>
+      <source>View Report</source>
+      <translation>Vis rapport</translation>
+    </message>
+    <message>
+      <source>Submit a Report</source>
+      <translation>Send inn en rapport</translation>
+    </message>
+    <message>
+      <source>Confirm deletion</source>
+      <translation>Bekreft sletting</translation>
+    </message>
+    <message>
+      <source>Delete game-specific settings?</source>
+      <translation>Slett innstillinger for enkeltspill?</translation>
     </message>
   </context>
   <context>
@@ -1212,14 +1212,6 @@
       <translation>Bruk oppsett per spill</translation>
     </message>
     <message>
-      <source>L1</source>
-      <translation>L1</translation>
-    </message>
-    <message>
-      <source>L2</source>
-      <translation>L2</translation>
-    </message>
-    <message>
       <source>Text Editor</source>
       <translation>Skriveprogram</translation>
     </message>
@@ -1228,28 +1220,12 @@
       <translation>Hjelp</translation>
     </message>
     <message>
-      <source>R1</source>
-      <translation>R1</translation>
-    </message>
-    <message>
-      <source>R2</source>
-      <translation>R2</translation>
-    </message>
-    <message>
-      <source>L3</source>
-      <translation>L3</translation>
-    </message>
-    <message>
       <source>Mouse to Joystick</source>
       <translation>Mus til styrespak</translation>
     </message>
     <message>
       <source>*press F7 ingame to activate</source>
       <translation>Trykk F7 i spillet for å bruke</translation>
-    </message>
-    <message>
-      <source>R3</source>
-      <translation>R3</translation>
     </message>
     <message>
       <source>Options</source>
@@ -1378,6 +1354,41 @@
     <message>
       <source>Touchpad Right</source>
       <translation>Høyre berøringsplate</translation>
+    </message>
+  </context>
+  <context>
+    <name>LogPresetsDialog</name>
+    <message>
+      <source>Log Filter Presets</source>
+      <translation>Forhåndsinnstillinger for loggfilter</translation>
+    </message>
+    <message>
+      <source>Comment</source>
+      <translation>Kommentar</translation>
+    </message>
+    <message>
+      <source>Filter</source>
+      <translation>Filter</translation>
+    </message>
+    <message>
+      <source>Load</source>
+      <translation>Last</translation>
+    </message>
+    <message>
+      <source>Close</source>
+      <translation>Lukk</translation>
+    </message>
+    <message>
+      <source>Add a new preset after the selected row</source>
+      <translation>Legg til ny forhåndsinnstilling etter den valgte raden</translation>
+    </message>
+    <message>
+      <source>Remove selected presets</source>
+      <translation>Fjern valgte forhåndsinnstillinger</translation>
+    </message>
+    <message>
+      <source>Load the selected preset</source>
+      <translation>Last inn den valgte forhåndsinnstillingen</translation>
     </message>
   </context>
   <context>
@@ -1666,20 +1677,12 @@
       <translation>Emulatorspråk</translation>
     </message>
     <message>
-      <source>Emulator</source>
-      <translation>Emulator</translation>
-    </message>
-    <message>
       <source>Default tab when opening settings</source>
       <translation>Standardfanen når innstillingene åpnes</translation>
     </message>
     <message>
       <source>Show Game Size In List</source>
       <translation>Vis spillstørrelse i lista</translation>
-    </message>
-    <message>
-      <source>Show Splash</source>
-      <translation>Vis velkomstbilde</translation>
     </message>
     <message>
       <source>Enable Discord Rich Presence</source>
@@ -1768,10 +1771,6 @@
     <message>
       <source>Graphics Device</source>
       <translation>Grafikkenhet</translation>
-    </message>
-    <message>
-      <source>Vblank Divider</source>
-      <translation>Vblank skillelinje</translation>
     </message>
     <message>
       <source>Advanced</source>
@@ -1872,10 +1871,6 @@
     <message>
       <source>Check for Updates</source>
       <translation>Se etter oppdateringer</translation>
-    </message>
-    <message>
-      <source>GUI Settings</source>
-      <translation>Grensesnitt-innstillinger</translation>
     </message>
     <message>
       <source>Title Music</source>
@@ -2030,10 +2025,6 @@
       <translation>Bredde / Høyde:\nAngir størrelsen på emulatorvinduet ved oppstart, som kan endres under spillingen.\nDette er annerledes fra oppløsningen i spillet.</translation>
     </message>
     <message>
-      <source>Vblank Divider:\nThe frame rate at which the emulator refreshes at is multiplied by this number. Changing this may have adverse effects, such as increasing the game speed, or breaking critical game functionality that does not expect this to change!</source>
-      <translation>Vblank skillelinje:\nBildehastigheten som emulatoren oppdaterer ved, multipliseres med dette tallet. Endring av dette kan ha negative effekter, som å øke hastigheten av spillet, eller ødelegge kritisk spillfunksjonalitet som ikke forventer at dette endres!</translation>
-    </message>
-    <message>
       <source>Enable Shaders Dumping:\nFor the sake of technical debugging, saves the games shaders to a folder as they render.</source>
       <translation>Bruk skyggeleggerdumping:\nFor teknisk feilsøking lagrer skyggeleggerne fra spillet i en mappe mens de gjengis.</translation>
     </message>
@@ -2060,14 +2051,6 @@
     <message>
       <source>Enable Debug Dumping:\nSaves the import and export symbols and file header information of the currently running PS4 program to a directory.</source>
       <translation>Bruk feilsøkingsdumping:\nLagrer import- og eksport-symbolene og filoverskrifts-informasjonen til det nåværende kjørende PS4-programmet i en mappe.</translation>
-    </message>
-    <message>
-      <source>Enable Vulkan Validation Layers:\nEnables a system that validates the state of the Vulkan renderer and logs information about its internal state.\nThis will reduce performance and likely change the behavior of emulation.</source>
-      <translation>Bruk Vulkan Validation Layers:\nAktiverer et system som bekrefter tilstanden til Vulkan-gjengiveren og loggfører informasjon om dens indre tilstand.\n Dette vil redusere ytelsen og sannsynligvis endre emulatorens atferd.</translation>
-    </message>
-    <message>
-      <source>Enable Vulkan Synchronization Validation:\nEnables a system that validates the timing of Vulkan rendering tasks.\nThis will reduce performance and likely change the behavior of emulation.</source>
-      <translation>Bruk Vulkan Synchronization Validation:\nEt system som bekrefter frekvens tiden av Vulkan-gjengivelseoppgaver.\nDette vil redusere ytelsen og sannsynligvis endre emulatorens atferd.</translation>
     </message>
     <message>
       <source>Enable RenderDoc Debugging:\nIf enabled, the emulator will provide compatibility with Renderdoc to allow capture and analysis of the currently rendered frame.</source>
@@ -2250,10 +2233,6 @@
       <translation> *Ustøttet Vulkan-versjon</translation>
     </message>
     <message>
-      <source>100%</source>
-      <translation>100%</translation>
-    </message>
-    <message>
       <source>Experimental Features</source>
       <translation>Eksperimentelle funksjoner</translation>
     </message>
@@ -2334,8 +2313,120 @@
       <translation>RCAS demping:</translation>
     </message>
     <message>
-      <source>0.250</source>
-      <translation>0,250</translation>
+      <source>Load Presets...</source>
+      <translation>Last inn forhåndsinnstillinger …</translation>
+    </message>
+    <message>
+      <source>Log</source>
+      <translation>Logg</translation>
+    </message>
+    <message>
+      <source>Open Log Location:\nOpen the folder where the log file is saved.</source>
+      <translation>Åpne loggplassering:\nÅpne mappa der loggfilen er lagret.</translation>
+    </message>
+    <message>
+      <source>Microphone:\nNone: Does not use the microphone.\nDefault Device: Will use the default device defined in the system.\nOr manually choose the microphone to be used from the list.</source>
+      <translation>Mikrofon:\nIngen: Tar ikke mikrofonen i bruk.\nStandard enhet: Tar i bruk standardenheten som angitt av systemet.\nEller velg mikrofonen manuelt fra lista.</translation>
+    </message>
+    <message>
+      <source>Volume:\nAdjust volume for games on a global level, range goes from 0-500% with the default being 100%.</source>
+      <translation>Volum:\nJuster volum for spill på et globalt nivå, skalaen går fra 0-500%, standarden er 100%.</translation>
+    </message>
+    <message>
+      <source>Default tab when opening settings:\nChoose which tab will open, the default is General.</source>
+      <translation>Standardfanen når innstillingene åpnes:\nVelg hvilken fane som skal åpnes, standarden er «Generelt».</translation>
+    </message>
+    <message>
+      <source>Show Game Size In List:\nThere is the size of the game in the list.</source>
+      <translation>Vis spillstørrelse i lista:\nViser størrelsen på spillene i spillista.</translation>
+    </message>
+    <message>
+      <source>Enable Motion Controls:\nWhen enabled it will use the controller&apos;s motion control if supported.</source>
+      <translation>Bruk bevegelsesstyring:\nNår i bruk, vil den bruke kontrollerens bevegelsesstyring hvis det støttes.</translation>
+    </message>
+    <message>
+      <source>Vblank Frequency</source>
+      <translation>Vblank-frekvens</translation>
+    </message>
+    <message>
+      <source>Vblank Frequency:\nThe frame rate at which the emulator refreshes at (60hz is the baseline, whether the game runs at 30 or 60fps). Changing this may have adverse effects, such as increasing the game speed, or breaking critical game functionality that does not expect this to change!</source>
+      <translation>Vblank-frekvens:\nBildehastigheten som emulatoren oppdaterer ved, (60 hz er standard, enten om spillet kjøres med 30 eller 60 fps). Endring av dette kan ha negative effekter, som å øke hastigheten av spillet, eller ødelegge kritisk spillfunksjonalitet som ikke forventer at dette endres!</translation>
+    </message>
+    <message>
+      <source>Enable Direct Memory Access</source>
+      <translation>Bruk direkte minnetilgang</translation>
+    </message>
+    <message>
+      <source>Enable Devkit Console Mode</source>
+      <translation>Bruk utvikler-konsollmodus</translation>
+    </message>
+    <message>
+      <source>Set &quot;PSN signed-in&quot; to True</source>
+      <translation>Bruk emulering av PSN-tilgang</translation>
+    </message>
+    <message>
+      <source>Set &quot;Network Connected&quot; to True</source>
+      <translation>Bruk emulering av nettverkstilgang</translation>
+    </message>
+    <message>
+      <source>Miscellaneous</source>
+      <translation>Diverse</translation>
+    </message>
+    <message>
+      <source>Frontend</source>
+      <translation>Grensesnitt</translation>
+    </message>
+    <message>
+      <source>Experimental</source>
+      <translation>Eksperimentell</translation>
+    </message>
+    <message>
+      <source>Show Splash Screen When Launching Game</source>
+      <translation>Vis velkomstbilde ved oppstart av spill</translation>
+    </message>
+    <message>
+      <source>General Frontend Settings</source>
+      <translation>Grensesnitt-innstillinger</translation>
+    </message>
+    <message>
+      <source>Enable PS4 Neo Mode</source>
+      <translation>Bruk PS4 Neo-modus</translation>
+    </message>
+    <message>
+      <source>Enable Direct Memory Access:\nEnables arbitrary memory access from the GPU to CPU memory.</source>
+      <translation>Bruk direkte minnetilgang:\nTar i bruk vilkårlig minnetilgang fra GPU-en til CPU-minne.</translation>
+    </message>
+    <message>
+      <source>Enable PS4 Neo Mode:\nAdds support for PS4 Pro emulation and memory size. Currently causes instability in a large number of tested games.</source>
+      <translation>Bruk PS4 Neo-modus:\nTar i bruk emulering av PS4 Pro-modus og økt minnestørrelse. Forårsaker for tiden ustabilitet i et stort antall testede spill.</translation>
+    </message>
+    <message>
+      <source>Enable Devkit Console Mode:\nAdds support for Devkit console memory size.</source>
+      <translation>Bruk utvikler-konsollmodus:\nTar i bruk økt minnekapasitet som i en utvikler-konsoll.</translation>
+    </message>
+    <message>
+      <source>Set Network Connected to True:\nForces games to detect an active network connection. Actual online capabilities are not yet supported.</source>
+      <translation>Bruk emulering av nettverkstilgang:\nTvinger spill å oppdage nettverkstilgang. Faktisk funksjonalitet støttes ikke.</translation>
+    </message>
+    <message>
+      <source>Set PSN Signed-in to True:\nForces games to detect an active PSN sign-in. Actual PSN capabilities are not supported.</source>
+      <translation>Bruk emulering av PSN-tilgang:\nTvinger spill å oppdage PSN-tilgang. Faktisk funksjonalitet støttes ikke.</translation>
+    </message>
+    <message>
+      <source>Enable Vulkan Validation Layers:\nEnables a system that validates the state of the Vulkan renderer and logs information about its internal state.\nThis will reduce performance and likely change the behavior of emulation.\nYou need the Vulkan SDK for this to work.</source>
+      <translation>Bruk Vulkan Validation Layers:\nTar i bruk et system som bekrefter tilstanden til Vulkan-gjengiveren og loggfører informasjon om dens indre tilstand.\n Dette vil redusere ytelsen og sannsynligvis endre emulatorens atferd.\nDu trenger Vulkan SDK for at dette skal fungere.</translation>
+    </message>
+    <message>
+      <source>Enable Vulkan Synchronization Validation:\nEnables a system that validates the timing of Vulkan rendering tasks.\nThis will reduce performance and likely change the behavior of emulation.\nYou need the Vulkan SDK for this to work.</source>
+      <translation>Bruk Vulkan Synchronization Validation:\nTar i bruk et system som bekrefter frekvens tiden av Vulkan-gjengivelseoppgaver.\nDette vil redusere ytelsen og sannsynligvis endre emulatorens atferd.\nDu trenger Vulkan SDK for at dette skal fungere.</translation>
+    </message>
+    <message>
+      <source>Audio Device (general)</source>
+      <translation>Lydenhet (generelt)</translation>
+    </message>
+    <message>
+      <source>Audio Device (DS4 speaker)</source>
+      <translation>Lydenhet (DS4-høyttaler)</translation>
     </message>
   </context>
   <context>
