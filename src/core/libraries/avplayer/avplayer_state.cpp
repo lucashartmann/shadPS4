@@ -176,13 +176,20 @@ bool AvPlayerState::GetStreamInfo(u32 stream_index, AvPlayerStreamInfo& info) {
 // Called inside GAME thread
 bool AvPlayerState::Start() {
     std::shared_lock lock(m_source_mutex);
-    if (m_up_source == nullptr || !m_up_source->Start()) {
-        LOG_ERROR(Lib_AvPlayer, "Could not start playback.");
-        return false;
+    if (m_current_state == AvState::Ready || m_current_state == AvState::Stop || Stop()) {
+        SetState(AvState::Starting);
+        if (!m_up_source->Start()) {
+            LOG_ERROR(Lib_AvPlayer, "Could not start playback.");
+            SetState(AvState::Error);
+            return false;
+        }
+        SetState(AvState::Play);
+        OnPlaybackStateChanged(AvState::Play);
+        return true;
     }
-    SetState(AvState::Play);
-    OnPlaybackStateChanged(AvState::Play);
-    return true;
+
+    LOG_ERROR(Lib_AvPlayer, "Could not start playback.");
+    return false;
 }
 
 // Called inside GAME thread
