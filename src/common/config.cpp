@@ -144,6 +144,7 @@ static ConfigEntry<string> logType("sync");
 static ConfigEntry<bool> isIdenticalLogGrouped(true);
 static ConfigEntry<string> userName("shadPS4");
 static ConfigEntry<bool> isShowSplash(false);
+static ConfigEntry<std::vector<u64>> skipedHashes(std::vector<u64>{});
 static ConfigEntry<string> isSideTrophy("right");
 static ConfigEntry<bool> isConnectedToNetwork(false);
 static bool enableDiscordRPC = false;
@@ -432,6 +433,10 @@ string sideTrophy() {
     return isSideTrophy.get();
 }
 
+std::vector<u64> hashesToSkip() {
+    return skipedHashes.get();
+}
+
 bool nullGpu() {
     return isNullGpu.get();
 }
@@ -653,6 +658,10 @@ void setPresentMode(std::string mode, bool is_game_specific) {
 
 void setisTrophyPopupDisabled(bool disable, bool is_game_specific) {
     isTrophyPopupDisabled.set(disable, is_game_specific);
+}
+
+void setHashesToSkip(const std::vector<u64>& vec, bool is_game_specific) {
+    skipedHashes.set(vec, is_game_specific);
 }
 
 void setEnableDiscordRPC(bool enable) {
@@ -942,6 +951,7 @@ void load(const std::filesystem::path& path, bool is_game_specific) {
         internalScreenWidth.setFromToml(gpu, "internalScreenWidth", is_game_specific);
         internalScreenHeight.setFromToml(gpu, "internalScreenHeight", is_game_specific);
         isNullGpu.setFromToml(gpu, "nullGpu", is_game_specific);
+        // skipedHashes.setFromToml(gpu, "skipShaders", is_game_specific);
         shouldCopyGPUBuffers.setFromToml(gpu, "copyGPUBuffers", is_game_specific);
         readbacksEnabled.setFromToml(gpu, "readbacks", is_game_specific);
         readbackLinearImagesEnabled.setFromToml(gpu, "readbackLinearImages", is_game_specific);
